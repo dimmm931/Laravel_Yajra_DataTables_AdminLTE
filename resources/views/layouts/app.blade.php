@@ -41,13 +41,17 @@
 					
 					
 					
-					    <!-- Common links (make link highlighted )-->
+					    <!-- Common links (make link highlighted ) -->
 						<li class="nav-item {{ Request::is('home*') ? 'active' : '' }}">
 							<a class="nav-link" href="{{ route('home') }}">{{ __('Home') }}</a>
 						</li>
 						
 						<li class="nav-item {{ Request::is('datatables*') ? 'active' : '' }}">
 							<a class="nav-link" href="{{ route('/datatables') }}">{{ __('Datatables') }}</a>
+						</li>
+						
+						<li class="nav-item {{ Request::is('adminlte*') ? 'active' : '' }}">
+							<a class="nav-link" href="{{ route('/adminlte') }}">{{ __('Admin LTE 3') }}</a>
 						</li>
 						<!-- END Common links (make link highlighted )-->
 						
@@ -113,16 +117,21 @@
 <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 	
 	
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>-->
 <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
-  <!-- App scripts -->
+  <!-- ADD App scripts -->
    @stack('scripts')
     @endif
 	
+
 	
+	
+
+
+
 	
 	
 </body>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Student;
 use DataTables;
+use App\User;
 
 
 class AdminLTEController extends Controller
@@ -55,6 +56,36 @@ class AdminLTEController extends Controller
 	
 	
 	
+	 /**
+     * Admin LTE.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function adminlte()
+    {
+		$usersCount = User::count();
+		$users = User::all();
+		
+		 $countries = Student::all();
+		
+        return view('admin-lte.admin-lte', [
+		       'usersCount' => $usersCount,
+			   'users' => $users, 
+			   'countries' => $countries
+			 ]);
+    }
+	
+	
+	
+	/**
+     * Get
+     *
+     */
+    public function getList()
+    {
+        $countries = Student::select(['id', 'name', 'email', 'phone', 'dob']);
+        return Datatables::of($countries)->make(true);
+    }
 	
 	
 }

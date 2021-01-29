@@ -24,9 +24,14 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 
-//mine
-Route::get('/datatables', 'AdminLTEController@index')->name('/datatables');
+//Simple JQ DataTable
+Route::get('/datatables',   'AdminLTEController@index')->name('/datatables');
 Route::get('students/list', 'AdminLTEController@getStudents')->name('students.list');
+
+//Admin LTE
+Route::get('adminlte',       'AdminLTEController@adminlte')->name('/adminlte');
+Route::get('/country-list',  'AdminLTEController@getList');
+
 
 
 

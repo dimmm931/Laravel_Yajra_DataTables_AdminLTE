@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 
@@ -32,7 +33,7 @@
 
 
 
-@stop
+@endsection
 
 @push('scripts')
 <script>
