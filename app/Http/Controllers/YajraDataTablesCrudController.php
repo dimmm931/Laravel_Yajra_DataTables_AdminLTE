@@ -6,7 +6,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Student;
 use DataTables;
-use Validator;
+//use Validator;
+use Illuminate\Support\Facades\Validator;
 
 
 
@@ -25,14 +26,13 @@ class YajraDataTablesCrudController extends Controller
    
    
    /**
-     * Display a listing of the resource.
+     * Display a listing of the resource (all users in table Students).
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
-        if($request->ajax())
-        {
+        if($request->ajax()){
             $data = Student::latest()->get();
             return DataTables::of($data)
                     ->addColumn('action', function($data){
@@ -57,35 +57,51 @@ class YajraDataTablesCrudController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created resource in storage. Done
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $rules = array(
-            'first_name'    =>  'required',
-            'last_name'     =>  'required'
-        );
+        $RegExp_Phone = '/^[+]380[\d]{1,4}[0-9]+$/'; //phone regexp
+		
+		$rules = [
+			'first_name'  => ['required', 'string', 'min:3'], 
+			'email'       => ['required', 'email'], 
+			'user_dob'    => ['required', 'string'],
+			'user_phone'  => ['required',  "regex: $RegExp_Phone" ],
+			'user_n'      => ['required', 'string', 'min:3'],
+			
+		];
 
-        $error = Validator::make($request->all(), $rules);
+        $error =  Validator::make($request->all(), $rules);
+		//$validator = Validator::make($request->all(), $rules /*, $mess*/);
 
-        if($error->fails())
-        {
+        if ($error->fails()) {  //($validator->fails())   //($error->fails())
             return response()->json(['errors' => $error->errors()->all()]);
         }
 
         $form_data = array(
-            'first_name'        =>  $request->first_name,
-            'last_name'         =>  $request->last_name
+            'name'    =>  $request->first_name,
+            'email'   =>  $request->email,
+			'dob'     =>  $request->user_dob,
+			'phone'   =>  $request->user_phone,
+			'username'=>  $request->user_n,
         );
 
-        Student::create($form_data);
+        if ( Student::create($form_data)) {
+            return response()->json(['success' => 'Data Added successfully']);
+		} else {
+			return response()->json(['success' => 'Failed to add data']);
 
-        return response()->json(['success' => 'Data Added successfully.']);
-
+		}
     }
+
+
+
+
+
 
     /**
      * Display the specified resource.
@@ -104,6 +120,7 @@ class YajraDataTablesCrudController extends Controller
      * @param  \App\Student  $sample_data
      * @return \Illuminate\Http\Response
      */
+	 /*
     public function edit($id)
     {
         if(request()->ajax())
@@ -112,38 +129,59 @@ class YajraDataTablesCrudController extends Controller
             return response()->json(['result' => $data]);
         }
     }
-
+    */
+	
+	
+	
     /**
-     * Update the specified resource in storage.
+     * Update the specified resource in storage. Done
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Student  $sample_data
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Student $sample_data)
+    public function update(Request $request/*, Student $sample_data*/)
     {
-        $rules = array(
-            'first_name'        =>  'required',
-            'last_name'         =>  'required'
-        );
+		
+       $RegExp_Phone = '/^[+]380[\d]{1,4}[0-9]+$/'; //phone regexp
+		
+		$rules = [
+			'first_name'  => ['required', 'string', 'min:3'], 
+			'email'       => ['required', 'email'], 
+			'user_dob'    => ['required', 'string'],
+			'user_phone'  => ['required',  "regex: $RegExp_Phone" ],
+			'user_n'      => ['required', 'string', 'min:3'],
+			
+		];
 
-        $error = Validator::make($request->all(), $rules);
+        $error =  Validator::make($request->all(), $rules);
+		//$validator = Validator::make($request->all(), $rules /*, $mess*/);
 
-        if($error->fails())
-        {
+        if ($error->fails()) {  //($validator->fails())   //($error->fails())
             return response()->json(['errors' => $error->errors()->all()]);
         }
 
         $form_data = array(
-            'first_name'    =>  $request->first_name,
-            'last_name'     =>  $request->last_name
+            'name'    =>  $request->first_name,
+            'email'   =>  $request->email,
+			'dob'     =>  $request->user_dob,
+			'phone'   =>  $request->user_phone,
+			'username'=>  $request->user_n,
         );
 
-        Student::whereId($request->hidden_id)->update($form_data);
+        if (Student::whereId($request->hidden_id)->update($form_data)) {
+            return response()->json(['success' => 'Data is successfully updated']);
+		} else {
+			return response()->json(['success' => 'Failed to update']);
 
-        return response()->json(['success' => 'Data is successfully updated']);
+		}
 
     }
+
+
+
+
+
 
     /**
      * Remove the specified resource from storage.
@@ -155,6 +193,21 @@ class YajraDataTablesCrudController extends Controller
     {
         $data = Student::findOrFail($id);
         $data->delete();
+    }
+	
+	
+	
+	
+	/**
+     * Find 1 record by ID to fill in Edit form with values. for ajax.
+     *
+     * @param  \App\Student  $sample_data
+     * @return \Illuminate\Http\Response
+     */
+    public function getFormVal($id)
+    {
+        $data = Student::findOrFail($id);
+        return response()->json(['result' => $data]);
     }
 }
 
