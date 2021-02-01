@@ -20,6 +20,7 @@ class CreateStudentsTable extends Migration
         $table->string('username');
         $table->string('phone');
         $table->string('dob');
+		$table->string('image');
         $table->timestamps();
     });
     }

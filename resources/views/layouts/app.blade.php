@@ -51,7 +51,11 @@
 						</li>
 						
 						<li class="nav-item {{ Request::is('adminlte*') ? 'active' : '' }}">
-							<a class="nav-link" href="{{ route('/adminlte') }}">{{ __('Admin LTE 3') }}</a>
+							<a class="nav-link" href="{{ route('/adminlte') }}">{{ __('Admin LTE 3 + dt') }}</a>
+						</li>
+						
+						<li class="nav-item {{ Request::is('yajradt2*') ? 'active' : '' }}">
+							<a class="nav-link" href="{{ route('/yajradt2') }}">{{ __('Yajra Dt Crud-2') }}</a>
 						</li>
 						<!-- END Common links (make link highlighted )-->
 						
@@ -107,23 +111,24 @@
 	
 	
 	
-	   <!-- Scripts -->
+	<!-- Scripts -->
 	
 	<!-- To register JS file for specific view only (In layout template) (for home '/' only. Loads JS for home Vue component <example>. If is loaded globally will inerfere with Appointmant vue-->
-    @if (in_array(Route::getFacadeRoot()->current()->uri(), ['datatables'])) <!--Route::getFacadeRoot()->current()->uri()  returns testRest--> 
+    @if (in_array(Route::getFacadeRoot()->current()->uri(), ['datatablesPREVVV'])) <!--Route::getFacadeRoot()->current()->uri()  returns testRest--> 
          
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"/>
-<link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
-<link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"/>
+        <link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
+        <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 	
 	
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
-<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-<!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>-->
-<script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
-  <!-- ADD App scripts -->
-   @stack('scripts')
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
+        <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+        <!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>-->
+        <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+        <!-- ADD App scripts -->
+        @stack('scripts')
+		@stack('css')
     @endif
 	
 

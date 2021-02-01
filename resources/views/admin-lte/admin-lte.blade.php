@@ -93,6 +93,9 @@
                 <th>Email</th>
                 <th>Phone</th>
                 <th>Dob</th>
+				<th>Image</th>
+				<th>Action</th>
+				<th>Action</th>
               </tr>
             </thead>
           </table>
@@ -134,6 +137,16 @@
         { data: 'email', name: 'email' },
         { data: 'phone', name: 'phone' },
         { data: 'dob', name: 'dob' },
+		//image column
+		{ data: 'image', name: 'image',
+            render: function( data, type, full, meta ) {
+                return "<img src=\"images/students/" + data + "\" height=\"50\"/>";
+            }
+        },
+		
+		//delete
+        {data: 'delete', name: 'delete', orderable: false, searchable: false},
+		{data: 'action',   name: 'action', orderable: false, searchable: false},
 		
 		    
       ]

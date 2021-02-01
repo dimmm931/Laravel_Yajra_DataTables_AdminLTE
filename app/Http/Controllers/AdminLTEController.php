@@ -66,12 +66,12 @@ class AdminLTEController extends Controller
 		$usersCount = User::count();
 		$users = User::all();
 		
-		 $countries = Student::all();
+		 //$students = Student::all();
 		
         return view('admin-lte.admin-lte', [
 		       'usersCount' => $usersCount,
 			   'users' => $users, 
-			   'countries' => $countries
+			   //'students' => $students
 			 ]);
     }
 	
@@ -83,8 +83,22 @@ class AdminLTEController extends Controller
      */
     public function getList()
     {
-        $countries = Student::select(['id', 'name', 'email', 'phone', 'dob']);
-        return Datatables::of($countries)->make(true);
+		
+        $students = Student::select(['id', 'name', 'email', 'phone', 'dob', 'image']);
+		
+        return Datatables::of($students)
+		    //adding columns
+		    ->addColumn('action', function($row) {
+                return '<a href="/prodicts/'. $row->id .'/edit" class="btn btn-primary">Edit</a>';
+            })
+            ->editColumn('delete', function ($row) {
+                return '<a href="/products/show/1' . $row->id . '">delete</a>';
+            })
+            ->rawColumns(['delete' => 'delete','action' => 'action'])
+			//End adding columns
+		    ->make(true);
+			
+
     }
 	
 	

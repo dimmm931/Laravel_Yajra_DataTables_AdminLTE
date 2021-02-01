@@ -252,12 +252,20 @@ return [
             'url'  => 'admin/settings',
             'icon' => 'fas fa-fw fa-lock',
         ],
+		
+		[
+            'text' => 'My Home',
+            'url'  => '/home',
+            'icon' => 'fas fa-glass-cheers',
+        ],
+		
+		
         [
             'text'    => 'multilevel',
             'icon'    => 'fas fa-fw fa-share',
             'submenu' => [
                 [
-                    'text' => 'level_one',
+                    'text' => 'level_one my',
                     'url'  => '#',
                 ],
                 [

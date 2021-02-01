@@ -1,13 +1,8 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+@extends('layouts.app')
 
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;600&display=swap" rel="stylesheet">
+@section('css')
+
 
         <!-- Styles -->
         <style>
@@ -62,8 +57,14 @@
                 margin-bottom: 30px;
             }
         </style>
-    </head>
-    <body>
+  
+@stop
+
+
+@section('content')
+
+
+    
         <div class="flex-center position-ref full-height">
             @if (Route::has('login'))
                 <div class="top-right links">
@@ -102,5 +103,5 @@
 				
             </div>
         </div>
-    </body>
-</html>
+
+@endsection
