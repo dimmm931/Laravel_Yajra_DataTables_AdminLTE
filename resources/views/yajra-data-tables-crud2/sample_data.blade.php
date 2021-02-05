@@ -11,7 +11,7 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   
     <!-- Styles -->
-    <!--<link href="{{ asset('css/app.css') }}" rel="stylesheet">-->
+    <link href="{{ asset('css/my_css.css') }}" rel="stylesheet">
  
  <body>
  
@@ -152,6 +152,9 @@
         </div>
         <div class="modal-body">
          <span id="form_result"></span>
+		 
+		 <img src="images/loader.gif" id="emplyee_photo" alt='image'/> <!-- Photo -->
+		 
          <form method="post" id="sample_form" class="form-horizontal">
           @csrf
 		  
@@ -242,7 +245,7 @@ $(document).ready(function(){
    { data: 'image', name: 'image',
         render: function( data, type, full, meta ) {
 			    if (data){ //if image DOES exist in DB
-                   return "<img src=\"images/students/" + data + "\" height=\"50\"/>";
+                   return "<img src=\"images/employees/" + data + "\" height=\"50\"/>";
 				} else { //if image is NULL
 				    return "<img src=\"images/no-image-found.png\" height=\"50\"/>";
 				}
@@ -275,6 +278,7 @@ $(document).ready(function(){
   
      if (!confirm('Sure to proceed?')){
 	     alert('Cancelled');
+		 return false;
      }
   
      var action_url = '';
@@ -319,7 +323,16 @@ $(document).ready(function(){
 //Fill in edit form with values from DB, when u click Edit
  $(document).on('click', '.edit', function(){ 
      $('#formModal').modal('show'); //show modal
- 
+	 
+	 //clear the fields if were set prev
+	 $('#first_name').val("");
+     $('#email')     .val("");
+	 $('#user_dob')  .val("");
+	 $('#user_phone').val("");
+	 $('#user_n')    .val("");
+     $("#emplyee_photo").attr("src", "images/loader.gif"); //setting the loader to image
+
+
      var id = $(this).attr('id');
      $('#form_result').html('');
   
@@ -334,6 +347,7 @@ $(document).ready(function(){
 	         $('#user_dob')  .val(data.result.dob);
 	         $('#user_phone').val(data.result.phone);
 	         $('#user_n')    .val(data.result.username);
+			 $("#emplyee_photo").attr("src", "images/employees/" + data.result.image); //setting the image
 	  
              $('#hidden_id').val(id);
              $('.modal-title').text('Edit Record');
@@ -356,7 +370,7 @@ $(document).ready(function(){
       $('#confirmModal').modal('show');
  });
 
- //Seleting after confirm
+ //Deleting after confirm
  $('#ok_button').click(function(){
      $.ajax({
          url:"sample/destroy/"+user_id,

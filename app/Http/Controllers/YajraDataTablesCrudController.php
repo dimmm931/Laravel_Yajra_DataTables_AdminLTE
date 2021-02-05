@@ -4,7 +4,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Student;
+use App\Models\Abz\Abz_Employees;
 use DataTables;
 //use Validator;
 use Illuminate\Support\Facades\Validator;
@@ -26,14 +26,14 @@ class YajraDataTablesCrudController extends Controller
    
    
    /**
-     * Display a listing of the resource (all users in table Students).
+     * Display a listing of the resource (all users in table Abz_Employees).
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
         if($request->ajax()){
-            $data = Student::latest()->get();
+            $data = Abz_Employees::latest()->get();
             return DataTables::of($data)
                     ->addColumn('action', function($data){
                         $button = '<button type="button" name="edit" id="'.$data->id.'" class="edit btn btn-primary btn-sm">Edit</button>';
@@ -90,7 +90,7 @@ class YajraDataTablesCrudController extends Controller
 			'username'=>  $request->user_n,
         );
 
-        if ( Student::create($form_data)) {
+        if ( Abz_Employees::create($form_data)) {
             return response()->json(['success' => 'Data Added successfully']);
 		} else {
 			return response()->json(['success' => 'Failed to add data']);
@@ -106,10 +106,10 @@ class YajraDataTablesCrudController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Student  $sample_data
+     * @param  \App\Abz_Employees  $sample_data
      * @return \Illuminate\Http\Response
      */
-    public function show(Student $sample_data)
+    public function show(Abz_Employees $sample_data)
     {
         //
     }
@@ -117,7 +117,7 @@ class YajraDataTablesCrudController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Student  $sample_data
+     * @param  \App\Abz_Employees  $sample_data
      * @return \Illuminate\Http\Response
      */
 	 /*
@@ -125,7 +125,7 @@ class YajraDataTablesCrudController extends Controller
     {
         if(request()->ajax())
         {
-            $data = Student::findOrFail($id);
+            $data = Abz_Employees::findOrFail($id);
             return response()->json(['result' => $data]);
         }
     }
@@ -137,10 +137,10 @@ class YajraDataTablesCrudController extends Controller
      * Update the specified resource in storage. Done
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Student  $sample_data
+     * @param  \App\Abz_Employees  $sample_data
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request/*, Student $sample_data*/)
+    public function update(Request $request/*, Abz_Employees $sample_data*/)
     {
 		
        $RegExp_Phone = '/^[+]380[\d]{1,4}[0-9]+$/'; //phone regexp
@@ -169,7 +169,7 @@ class YajraDataTablesCrudController extends Controller
 			'username'=>  $request->user_n,
         );
 
-        if (Student::whereId($request->hidden_id)->update($form_data)) {
+        if (Abz_Employees::whereId($request->hidden_id)->update($form_data)) {
             return response()->json(['success' => 'Data is successfully updated']);
 		} else {
 			return response()->json(['success' => 'Failed to update']);
@@ -186,12 +186,12 @@ class YajraDataTablesCrudController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Student  $sample_data
+     * @param  \App\Abz_Employees  $sample_data
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        $data = Student::findOrFail($id);
+        $data = Abz_Employees::findOrFail($id);
         $data->delete();
     }
 	
@@ -201,12 +201,12 @@ class YajraDataTablesCrudController extends Controller
 	/**
      * Find 1 record by ID to fill in Edit form with values. for ajax.
      *
-     * @param  \App\Student  $sample_data
+     * @param  \App\Abz_Employees  $sample_data
      * @return \Illuminate\Http\Response
      */
     public function getFormVal($id)
     {
-        $data = Student::findOrFail($id);
+        $data = Abz_Employees::findOrFail($id);
         return response()->json(['result' => $data]);
     }
 }

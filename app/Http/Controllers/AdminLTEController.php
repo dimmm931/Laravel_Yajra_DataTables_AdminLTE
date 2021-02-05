@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Student;
+use App\Models\Abz\Abz_Employees;
 use DataTables;
 use App\User;
 
@@ -40,7 +40,7 @@ class AdminLTEController extends Controller
     {
 		
         //if ($request->ajax()) {
-            $data = Student::latest()->get();
+            $data = Abz_Employees::latest()->get();
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
@@ -66,7 +66,7 @@ class AdminLTEController extends Controller
 		$usersCount = User::count();
 		$users = User::all();
 		
-		 //$students = Student::all();
+		 //$students = Abz_Employees::all();
 		
         return view('admin-lte.admin-lte', [
 		       'usersCount' => $usersCount,
@@ -84,7 +84,7 @@ class AdminLTEController extends Controller
     public function getList()
     {
 		
-        $students = Student::select(['id', 'name', 'email', 'phone', 'dob', 'image']);
+        $students = Abz_Employees::select(['id', 'name', 'email', 'phone', 'dob', 'image']);
 		
         return Datatables::of($students)
 		    //adding columns

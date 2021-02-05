@@ -77,7 +77,7 @@
   <!-- Students via DataTable -->
   <div class="row">
     <div class="col-xs-12">
-	  <hr><h4>Table Student via Datatables</h4>
+	  <hr><h4>Table {abz_employees} via Datatables</h4>
       <div class="box">
         <div class="box-header">
           @if(Session::has('message'))
