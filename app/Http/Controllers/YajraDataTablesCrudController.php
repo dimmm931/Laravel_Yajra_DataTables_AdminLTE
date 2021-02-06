@@ -33,11 +33,12 @@ class YajraDataTablesCrudController extends Controller
     public function index(Request $request)
     {
         if($request->ajax()){
-            $data = Abz_Employees::latest()->get();
-            return DataTables::of($data)
+            $data = Abz_Employees::with('getRank', 'getSuperior')->latest()->get();  //->with('getRank', 'getSuperior') => hasOne Relations, models/Abz_Employees methods getSuperior(), getRank() 
+            //dd($data);
+			return DataTables::of($data)
                     ->addColumn('action', function($data){
-                        $button = '<button type="button" name="edit" id="'.$data->id.'" class="edit btn btn-primary btn-sm">Edit</button>';
-                        $button .= '&nbsp;&nbsp;&nbsp;<button type="button" name="edit" id="'.$data->id.'" class="delete btn btn-danger btn-sm">Delete</button>';
+                        $button = '<button type="button" name="edit" id="'.$data->id.'" class="edit btn btn-primary btn-sm my-btn">_Edit_</button>';
+                        $button .= '&nbsp;&nbsp;&nbsp;<button type="button" name="edit" id="'.$data->id.'" class="delete btn btn-danger btn-sm my-btn">Delete</button>';
                         return $button;
                     })
                     ->rawColumns(['action'])
@@ -206,7 +207,7 @@ class YajraDataTablesCrudController extends Controller
      */
     public function getFormVal($id)
     {
-        $data = Abz_Employees::findOrFail($id);
+        $data = Abz_Employees::with('getRank', 'getSuperior')->findOrFail($id); //with('getRank', 'getSuperior') => hasOne Relations, => hasOne Relations, models/Abz_Employees methods getSuperior(), getRank()
         return response()->json(['result' => $data]);
     }
 }

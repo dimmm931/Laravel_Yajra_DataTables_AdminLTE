@@ -112,7 +112,7 @@
   <div class="container"> 
   
      <br />
-     <h3 align="center">Laravel Yajra DataTables CRUD using Ajax</h3>
+     <h3 align="center">Laravel Yajra DataTables CRUD using Ajax <span class="small">(on /models/Abz/Abz_Employees)</h3></h3>
      <br />
      <div align="right">
       <button type="button" name="create_record" id="create_record" class="btn btn-success btn-sm">Create Record</button>
@@ -126,7 +126,8 @@
             <th>Email</th>
 			<th>Dob</th>
 			<th>Phone</th>
-			<th>UserN</th>
+			<th>Nick</th>
+			<th>Super</th>
 			<th>Image</th>
             <th>Action</th>
         </tr>
@@ -141,8 +142,7 @@
 
 
 
-
-
+<!------------- Hidden modal with form to create/edit a record ------------>
 <div id="formModal" class="modal fade" role="dialog">
  <div class="modal-dialog">
   <div class="modal-content">
@@ -193,6 +193,27 @@
                </div>
            </div>
 		   
+		    <div class="form-group">
+               <label class="control-label col-md-4">Salary: </label>
+               <div class="col-md-8">
+                   <input type="text" name="user_salary" id="user_salary" class="form-control" />
+               </div>
+           </div>
+		   
+		    <div class="form-group">
+               <label class="control-label col-md-4">Rank: </label>
+               <div class="col-md-8">
+                   <input type="text" name="user_rank" id="user_rank" class="form-control" />
+               </div>
+           </div>
+		   
+		    <div class="form-group">
+               <label class="control-label col-md-4">Superior: </label>
+               <div class="col-md-8">
+                   <input type="text" name="user_superior" id="user_superior" class="form-control" />
+               </div>
+           </div>
+		   
                 <br />
                 <div class="form-group" align="center">
                  <input type="hidden" name="action" id="action" value="Add" />
@@ -204,7 +225,11 @@
      </div>
     </div>
 </div>
+<!------------- END Hidden modal with form to create/edit a record ------------>
 
+
+
+<!----------- Hidden modal window for Deloete confirmation ----------->
 <div id="confirmModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -227,7 +252,15 @@
 <script>
 $(document).ready(function(){
 
- //build datatables
+ 
+  /*
+  |--------------------------------------------------------------------------
+  | Builds/loads datatables on page load
+  |--------------------------------------------------------------------------
+  |
+  |
+  */
+  
  $('#user_table').DataTable({
   processing: true,
   serverSide: true,
@@ -239,7 +272,9 @@ $(document).ready(function(){
    { data: 'email', name: 'email' },
    { data: 'dob', name: 'dob' },
    { data: 'phone', name: 'phone' },
-   { data: 'username', name: 'username' },
+   { data: 'username', name: 'usernameAnyName' },
+   { data: 'get_superior.name', name: 'superior_id' }, //hasOne relation, models/Abz_Employees method getSuperior(), sql column 'name' Displays Superior name. 
+                                                       //Same implementation as hasOne relation in JSON (REST API). See ReadMe_Laravel_Com_Commands.txt
    
    //image column
    { data: 'image', name: 'image',
@@ -272,7 +307,14 @@ $(document).ready(function(){
  });
 
 
- // When u click submit button, wether click "Create new" or "Edit" buttons
+
+   /*
+  |--------------------------------------------------------------------------
+  | when user clicks "Submit" button, wether click "Create new" or "Edit" buttons
+  |--------------------------------------------------------------------------
+  |
+  |
+  */
  $('#sample_form').on('submit', function(event){
      event.preventDefault();
   
@@ -320,16 +362,29 @@ $(document).ready(function(){
 
 
 
-//Fill in edit form with values from DB, when u click Edit
+
+ /*
+  |--------------------------------------------------------------------------
+  | Fill in edit form with values from DB, when u click Edit
+  |--------------------------------------------------------------------------
+  |
+  |
+  */
  $(document).on('click', '.edit', function(){ 
      $('#formModal').modal('show'); //show modal
 	 
 	 //clear the fields if were set prev
-	 $('#first_name').val("");
-     $('#email')     .val("");
-	 $('#user_dob')  .val("");
-	 $('#user_phone').val("");
-	 $('#user_n')    .val("");
+	 $('#first_name')     .val("");
+     $('#email')          .val("");
+	 $('#user_dob')       .val("");
+	 $('#user_phone')     .val("");
+	 $('#user_n')         .val("");
+	 $('#user_salary')    .val(""); 
+	 $('#user_rank')      .val("");  
+	 $('#user_superior')  .val("");  
+
+
+	 
      $("#emplyee_photo").attr("src", "images/loader.gif"); //setting the loader to image
 
 
@@ -340,13 +395,16 @@ $(document).ready(function(){
          url :  "{{ url('/sample/edit/')}}" + "/" + id,    //"/sample/edit" +id,
          dataType:"json",
          success:function(data)
-         {
+         {   console.log(data);
 	         //Fill in ther Edit form value from DB
-             $('#first_name').val(data.result.name);
-             $('#email')     .val(data.result.email);
-	         $('#user_dob')  .val(data.result.dob);
-	         $('#user_phone').val(data.result.phone);
-	         $('#user_n')    .val(data.result.username);
+             $('#first_name') .val(data.result.name);
+             $('#email')      .val(data.result.email);
+	         $('#user_dob')   .val(data.result.dob);
+	         $('#user_phone') .val(data.result.phone);
+	         $('#user_n')     .val(data.result.username);
+			 $('#user_salary').val(data.result.salary);
+			 $('#user_rank')  .val(data.result.get_rank.rank_name); //hasOne relation, models/Abz_Employees method getRank(), sql column 'rank_name'. Displays Rank. Same implementation as hasOne relation in JSON (REST API). See ReadMe_Laravel_Com_Commands.txt
+			 $('#user_superior').val(data.result.get_superior.name);//hasOne relation, models/Abz_Employees method getSuperior(), sql column 'name' Displays Superior name. 
 			 $("#emplyee_photo").attr("src", "images/employees/" + data.result.image); //setting the image
 	  
              $('#hidden_id').val(id);
@@ -362,9 +420,17 @@ $(document).ready(function(){
      })
  });
 
+
  var user_id;
 
-// Delete 
+
+ /*
+  |--------------------------------------------------------------------------
+  | When user clicks "Delete"
+  |--------------------------------------------------------------------------
+  |
+  |
+  */
  $(document).on('click', '.delete', function(){
       user_id = $(this).attr('id');
       $('#confirmModal').modal('show');

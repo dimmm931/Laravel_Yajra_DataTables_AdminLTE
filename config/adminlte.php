@@ -259,6 +259,11 @@ return [
             'icon' => 'fas fa-glass-cheers',
         ],
 		
+		[
+            'text' => 'Yajra pure DataTables',
+            'url'  => '/yajradt2',
+            'icon' => 'fas fa-glass-cheers',
+        ],
 		
         [
             'text'    => 'multilevel',

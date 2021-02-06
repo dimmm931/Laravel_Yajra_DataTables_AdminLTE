@@ -1,1 +1,4 @@
-#emplyee_photo{ width:20%; border-radius:15px; padding:1em;}
+#emplyee_photo     { width:20%;  padding:1em;}
+#emplyee_photo img { border-radius:15px; }
+
+.my-btn {border:1px solid black; margin-bottom:0.4em;}

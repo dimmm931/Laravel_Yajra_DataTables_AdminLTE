@@ -96,8 +96,8 @@
                     <a href="https://github.com/laravel/laravel">GitHub</a>
                 </div>
 				
-				<div>
-				   <h3 class="text-danger">Laravel Admin LTE, datatables, Voyager Admin Panel</h3> 
+				<div class="col-sm-12 col-xs-12 alert-danger">
+				   <h3 class="text-danger">Examples of Laravel Admin LTE, Yajra datatables, Voyager Admin Panel can be found here</h3> 
 				<div>
 				
 				
