@@ -127,7 +127,7 @@
 			<th>Dob</th>
 			<th>Phone</th>
 			<th>Nick</th>
-			<th>Super</th>
+			<th>Super(hO)</th>
 			<th>Image</th>
             <th>Action</th>
         </tr>
@@ -155,7 +155,7 @@
 		 
 		 <img src="images/loader.gif" id="emplyee_photo" alt='image'/> <!-- Photo -->
 		 
-         <form method="post" id="sample_form" class="form-horizontal">
+         <form method="post" id="sample_form" class="form-horizontal" enctype="multipart/form-data">
           @csrf
 		  
           <div class="form-group">
@@ -213,6 +213,23 @@
                    <input type="text" name="user_superior" id="user_superior" class="form-control" />
                </div>
            </div>
+		   
+		    <div class="form-group">
+               <label class="control-label col-md-4">Hired at: </label>
+               <div class="col-md-8">
+                   <input type="text" name="user_hired_at" id="user_hired_at" class="form-control" />
+               </div>
+           </div>
+		   
+		    <div class="form-group">
+               <label class="control-label col-md-4">Image: </label>
+               <div class="col-md-8"> 
+                   <input type="file" name="image" id="image" class="form-control" />
+               </div>
+           </div>
+		   
+			
+
 		   
                 <br />
                 <div class="form-group" align="center">
@@ -293,13 +310,19 @@ $(document).ready(function(){
 
 
 
- 
+  /*
+  |--------------------------------------------------------------------------
+  |
+  |--------------------------------------------------------------------------
+  |
+  |
+  */
  $('#create_record').click(function(){
      $('.modal-title').text('Add New Record');
      $('#action_button').val('Add');
      $('#action').val('Add');
      $('#form_result').html('');
-
+     $("#emplyee_photo").attr("src", "images/loader.gif"); //setting the image to loader, if photo there was prev (e.g while editing)
 
 
      $("#sample_form").trigger('reset')//clears any prev inputs;
@@ -308,7 +331,11 @@ $(document).ready(function(){
 
 
 
-   /*
+
+
+
+
+  /*
   |--------------------------------------------------------------------------
   | when user clicks "Submit" button, wether click "Create new" or "Edit" buttons
   |--------------------------------------------------------------------------
@@ -330,14 +357,22 @@ $(document).ready(function(){
      }
 
      if($('#action').val() == 'Edit'){
-         action_url = "{{ route('sample.update') }}"; alert('roll the edit');
+         action_url = "{{ route('sample.update') }}"; 
+		 alert('Starting editting....');
      }
 
+     var formData = new FormData(this); //fix to load image via ajax, serialize() wont't work
+	 
      $.ajax({
          url: action_url,
          method:"POST",
-         data:$(this).serialize(),
+         data: formData, //$(this).serialize(), //fix to load image via ajax, serialize() wont't work
          dataType:"json",
+		 
+		 cache:false,
+         contentType: false,
+         processData: false,
+				
          success:function(data)
          {
              var html = '';
@@ -355,7 +390,12 @@ $(document).ready(function(){
                  $('#user_table').DataTable().ajax.reload();
              }
              $('#form_result').html(html);
-         }
+         },
+		 error: function (error) {
+			 console.log(error);
+             $(".modal-title").stop().fadeOut("slow",function(){ $(this).html("<h4 style='color:red;padding:3em;'>ERROR!!! <br> Failed Saving/Editing</h4>")}).fadeIn(2000);
+         }	
+		 
      });
  });
 
@@ -382,10 +422,12 @@ $(document).ready(function(){
 	 $('#user_salary')    .val(""); 
 	 $('#user_rank')      .val("");  
 	 $('#user_superior')  .val("");  
+	 $('#user_hired_at')  .val(""); 
+	 
 
 
 	 
-     $("#emplyee_photo").attr("src", "images/loader.gif"); //setting the loader to image
+     $("#emplyee_photo").attr("src", "images/loader.gif"); //changing the image to loader
 
 
      var id = $(this).attr('id');
@@ -397,16 +439,18 @@ $(document).ready(function(){
          success:function(data)
          {   console.log(data);
 	         //Fill in ther Edit form value from DB
-             $('#first_name') .val(data.result.name);
-             $('#email')      .val(data.result.email);
-	         $('#user_dob')   .val(data.result.dob);
-	         $('#user_phone') .val(data.result.phone);
-	         $('#user_n')     .val(data.result.username);
-			 $('#user_salary').val(data.result.salary);
-			 $('#user_rank')  .val(data.result.get_rank.rank_name); //hasOne relation, models/Abz_Employees method getRank(), sql column 'rank_name'. Displays Rank. Same implementation as hasOne relation in JSON (REST API). See ReadMe_Laravel_Com_Commands.txt
+             $('#first_name')   .val(data.result.name);
+             $('#email')        .val(data.result.email);
+	         $('#user_dob')     .val(data.result.dob);
+	         $('#user_phone')   .val(data.result.phone);
+	         $('#user_n')       .val(data.result.username);
+			 $('#user_salary')  .val(data.result.salary);
+			 $('#user_hired_at').val(data.result.hired_at);
+			 $('#user_rank')    .val(data.result.get_rank.rank_name); //hasOne relation, models/Abz_Employees method getRank(), sql column 'rank_name'. Displays Rank. Same implementation as hasOne relation in JSON (REST API). See ReadMe_Laravel_Com_Commands.txt
 			 $('#user_superior').val(data.result.get_superior.name);//hasOne relation, models/Abz_Employees method getSuperior(), sql column 'name' Displays Superior name. 
-			 $("#emplyee_photo").attr("src", "images/employees/" + data.result.image); //setting the image
-	  
+			 $("#emplyee_photo").attr("src", "images/employees/" + data.result.image); //setting displaying the image in the top of form
+	         //$('#image').val('pp.img');
+	       
              $('#hidden_id').val(id);
              $('.modal-title').text('Edit Record');
              $('#action_button').val('Edit');

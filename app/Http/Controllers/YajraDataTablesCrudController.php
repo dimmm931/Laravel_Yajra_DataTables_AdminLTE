@@ -73,6 +73,13 @@ class YajraDataTablesCrudController extends Controller
 			'user_dob'    => ['required', 'string'],
 			'user_phone'  => ['required',  "regex: $RegExp_Phone" ],
 			'user_n'      => ['required', 'string', 'min:3'],
+			'user_salary' => ['required',  'numeric'], //numeric to accept float
+			'user_rank'   => ['required', 'integer', ],
+			'user_superior'   => ['required', 'int', ],
+			'user_hired_at'   => ['required',],
+
+			//image validation https://hdtuto.com/article/laravel-57-image-upload-with-validation-example
+			'image' => ['required',  'mimes:jpeg,png,jpg,gif,svg', 'max:2048' ],
 			
 		];
 
@@ -83,12 +90,24 @@ class YajraDataTablesCrudController extends Controller
             return response()->json(['errors' => $error->errors()->all()]);
         }
 
+
+        //Move uploaded image to the specified folder 
+		$imageName = time(). '_' . $request->image->getClientOriginalName(); //new name (time + originalName)
+		request()->image->move(public_path('images/employees'), $imageName);
+		
+		
+		
         $form_data = array(
-            'name'    =>  $request->first_name,
-            'email'   =>  $request->email,
-			'dob'     =>  $request->user_dob,
-			'phone'   =>  $request->user_phone,
-			'username'=>  $request->user_n,
+            'name'        =>  $request->first_name, //DB column => input name
+            'email'       =>  $request->email,
+			'dob'         =>  $request->user_dob,
+			'phone'       =>  $request->user_phone,
+			'username'    =>  $request->user_n,
+			'rank_id'     =>  $request->user_rank,
+			'superior_id' =>  $request->user_superior,
+			'salary'      =>  $request->user_salary,
+			'hired_at'    =>  $request->user_hired_at,
+			'image'       =>  $imageName, //$request->image,
         );
 
         if ( Abz_Employees::create($form_data)) {
@@ -152,6 +171,12 @@ class YajraDataTablesCrudController extends Controller
 			'user_dob'    => ['required', 'string'],
 			'user_phone'  => ['required',  "regex: $RegExp_Phone" ],
 			'user_n'      => ['required', 'string', 'min:3'],
+			'user_salary' => ['required',  'numeric'], //numeric to accept float
+			'user_rank'   => ['required', 'integer', ],
+			'user_superior'   => ['required', 'int', ],
+			'user_hired_at'   => ['required',],
+			//image validation https://hdtuto.com/article/laravel-57-image-upload-with-validation-example
+			'image' => ['required',  'mimes:jpeg,png,jpg,gif,svg', 'max:2048' ],
 			
 		];
 
@@ -162,12 +187,29 @@ class YajraDataTablesCrudController extends Controller
             return response()->json(['errors' => $error->errors()->all()]);
         }
 
+
+        //Move uploaded image to the specified folder 
+		$imageName = time(). '_' . $request->image->getClientOriginalName(); //new name (time + originalName)
+		request()->image->move(public_path('images/employees'), $imageName);
+		
+		
+		//delete a prev image from folder '/images/employees/'
+		$product = Abz_Employees::where('id', $request->hidden_id)->first(); //found image 
+		if(file_exists(public_path('images/employees/' . $product->image))){
+		    \Illuminate\Support\Facades\File::delete('images/employees/' . $product->image);
+		}
+		
         $form_data = array(
-            'name'    =>  $request->first_name,
-            'email'   =>  $request->email,
-			'dob'     =>  $request->user_dob,
-			'phone'   =>  $request->user_phone,
-			'username'=>  $request->user_n,
+            'name'        =>  $request->first_name, //DB column => input name
+            'email'       =>  $request->email,
+			'dob'         =>  $request->user_dob,
+			'phone'       =>  $request->user_phone,
+			'username'    =>  $request->user_n,
+			'rank_id'     =>  $request->user_rank,
+			'superior_id' =>  $request->user_superior,
+			'salary'      =>  $request->user_salary,
+			'hired_at'    =>  $request->user_hired_at,
+			'image'       =>   $imageName, //$request->image,
         );
 
         if (Abz_Employees::whereId($request->hidden_id)->update($form_data)) {
