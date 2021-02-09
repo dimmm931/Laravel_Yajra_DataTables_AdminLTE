@@ -10,9 +10,11 @@
     "require": {
         "php": "^7.2.5|^8.0",
         "fideloper/proxy": "^4.4",
+        "intervention/image": "^2.5",
         "jeroennoten/laravel-adminlte": "^3.5",
         "laravel/framework": "^6.20",
         "laravel/tinker": "^2.5",
+        "tcg/voyager": "^1.4",
         "yajra/laravel-datatables-oracle": "^9.15"
     },
     "require-dev": {

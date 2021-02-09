@@ -175,7 +175,7 @@
 		   <div class="form-group">
                <label class="control-label col-md-4">Dob: </label>
                <div class="col-md-8">
-                   <input type="text" name="user_dob" id="user_dob" class="form-control" />
+                   <input type="date" name="user_dob" id="user_dob" class="form-control" />
                </div>
            </div>
 		   
@@ -200,24 +200,50 @@
                </div>
            </div>
 		   
+		   
+		    <!-- Ranks input, dropdown -->
 		    <div class="form-group">
                <label class="control-label col-md-4">Rank: </label>
                <div class="col-md-8">
-                   <input type="text" name="user_rank" id="user_rank" class="form-control" />
-               </div>
+			       <input type="text" name="user_rank_name" id="user_rank_name" class="form-control" /> <!-- visible with Name -->
+                   <input type="text" name="user_rank" id="user_rank" class="form-control" /> <!-- hidden with ID -->
+                   
+				   <select class="mdb-select md-form" id="dropdownRank">
+						<option value="" id="startRank" selected="selected">Change Rank </option>
+		                    @foreach ($ranks as $a)
+						        <option value={{ $a->id}} > {{ $a->rank_name}} </option>
+					       @endforeach
+					</select> 
+					
+			   </div>
            </div>
+		   <!-- End Ranks input, dropdown -->
 		   
+		   
+		   
+		    <!-- Superior input, dropdown with hasOne relation -->
 		    <div class="form-group">
                <label class="control-label col-md-4">Superior: </label>
                <div class="col-md-8">
-                   <input type="text" name="user_superior" id="user_superior" class="form-control" />
+                   <input type="text" name="user_superior_name" id="user_superior_name" class="form-control" /> <!-- visible Name -->
+				   <input type="text" name="user_superior" id="user_superior" class="form-control" /> <!-- hidden with ID -->
+
+				    <select class="mdb-select md-form" id="dropdownnn">
+						<option value="" id="start" selected="selected">Change superior </option>
+		                    @foreach ($employees as $a)
+						        <option value={{ $a->id}} > {{ $a->name}} </option>
+					       @endforeach
+					</select> 
+				   
                </div>
            </div>
+		   <!-- End Superior input, dropdown with hasOne relation -->
+		   
 		   
 		    <div class="form-group">
                <label class="control-label col-md-4">Hired at: </label>
                <div class="col-md-8">
-                   <input type="text" name="user_hired_at" id="user_hired_at" class="form-control" />
+                   <input type="date" name="user_hired_at" id="user_hired_at" class="form-control" />
                </div>
            </div>
 		   
@@ -446,8 +472,15 @@ $(document).ready(function(){
 	         $('#user_n')       .val(data.result.username);
 			 $('#user_salary')  .val(data.result.salary);
 			 $('#user_hired_at').val(data.result.hired_at);
-			 $('#user_rank')    .val(data.result.get_rank.rank_name); //hasOne relation, models/Abz_Employees method getRank(), sql column 'rank_name'. Displays Rank. Same implementation as hasOne relation in JSON (REST API). See ReadMe_Laravel_Com_Commands.txt
-			 $('#user_superior').val(data.result.get_superior.name);//hasOne relation, models/Abz_Employees method getSuperior(), sql column 'name' Displays Superior name. 
+			 
+			 //Rank fields (visible with name and hidden with ID, ID goes to server to create/update)
+			 $('#user_rank_name')    .val(data.result.get_rank.rank_name); //Name //hasOne relation, models/Abz_Employees method getRank(), sql column 'rank_name'. Displays Rank. Same implementation as hasOne relation in JSON (REST API). See ReadMe_Laravel_Com_Commands.txt
+			 $('#user_rank')         .val(data.result.rank_id); //ID
+			 
+			 //superior fields (visible with name and hidden with ID, ID goes to server to create/update)
+			 $('#user_superior_name').val(data.result.get_superior.name);//Name //hasOne relation, models/Abz_Employees method getSuperior(), sql column 'name' Displays Superior name. 
+			 $('#user_superior')     .val(data.result.superior_id); //ID
+			 
 			 $("#emplyee_photo").attr("src", "images/employees/" + data.result.image); //setting displaying the image in the top of form
 	         //$('#image').val('pp.img');
 	       
@@ -499,6 +532,55 @@ $(document).ready(function(){
  });
 
 });
+
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | When user changes Superior in dropdown
+  |--------------------------------------------------------------------------
+  |
+  |
+  */                                                                                
+	if(document.getElementById("dropdownnn") !== null){ //additional check to avoid errors in console in actions, other than actionShowAllBlogs(), when this id does not exist
+	   document.getElementById("dropdownnn").onchange = function() {
+          //if (this.selectedIndex!==0) {
+              //window.location.href = this.value;
+			  $('#user_superior')     .val(this.value); //set the ID to hidden input
+			  var selectedText =  $("#dropdownnn option:selected").html(); //gets the text of selected option
+			  $('#user_superior_name').val(selectedText);  //sets the name to visible input
+			  
+			  //sets the selected to start, sets Superior dropdown selected to initial value = "change"
+			  $('#start').val('').prop('selected', true);
+          //}        
+       };
+	}   
+	   
+	   
+  /*
+  |--------------------------------------------------------------------------
+  | When user changes Rank in dropdown
+  |--------------------------------------------------------------------------
+  |
+  |
+  */                                                                                
+	if(document.getElementById("dropdownRank") !== null){ //additional check to avoid errors in console in actions, other than actionShowAllBlogs(), when this id does not exist
+	   document.getElementById("dropdownRank").onchange = function() {
+          //if (this.selectedIndex!==0) {
+              //window.location.href = this.value;
+			  $('#user_rank')     .val(this.value); //set the ID to hidden input
+			  var selectedText =  $("#dropdownRank option:selected").html(); //gets the text of selected option
+			  $('#user_rank_name').val(selectedText);  //sets the name to visible input
+			  
+			  //sets the selected to start, sets Rank dropdown selected to initial value = "change"
+			  $('#startRank').val('').prop('selected', true);
+          //}        
+       };
+  
+	   
+	}
+	
+	
 </script>
 
 

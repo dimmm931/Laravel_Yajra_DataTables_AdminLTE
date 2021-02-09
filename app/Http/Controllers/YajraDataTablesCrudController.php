@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Abz\Abz_Employees;
+use App\Models\Abz\Abz_Ranks;
 use DataTables;
 //use Validator;
 use Illuminate\Support\Facades\Validator;
-
+use Image; //Intervention
 
 
 class YajraDataTablesCrudController extends Controller
@@ -32,6 +33,7 @@ class YajraDataTablesCrudController extends Controller
      */
     public function index(Request $request)
     {
+		//handles ajax request to build a dataTable
         if($request->ajax()){
             $data = Abz_Employees::with('getRank', 'getSuperior')->latest()->get();  //->with('getRank', 'getSuperior') => hasOne Relations, models/Abz_Employees methods getSuperior(), getRank() 
             //dd($data);
@@ -44,7 +46,13 @@ class YajraDataTablesCrudController extends Controller
                     ->rawColumns(['action'])
                     ->make(true);
         }
-        return view('yajra-data-tables-crud2.sample_data');
+		//End handles ajax request to build a dataTable
+		
+		// For regulat http request without ajax
+		$employees = Abz_Employees::with('getRank', 'getSuperior')->latest()->get(); //gets data for superior dropdown
+		$ranks     = Abz_Ranks::latest()->get(); //gets data for ranks dropdown
+		
+        return view('yajra-data-tables-crud2.sample_data',  compact('employees', 'ranks'));
     }
 
     /**
@@ -65,21 +73,21 @@ class YajraDataTablesCrudController extends Controller
      */
     public function store(Request $request)
     {
-        $RegExp_Phone = '/^[+]380[\d]{1,4}[0-9]+$/'; //phone regexp
+        
+       $RegExp_Phone = '/^[+]380[\d]{1,4}[0-9]+$/'; //phone regexp
 		
 		$rules = [
 			'first_name'  => ['required', 'string', 'min:3'], 
 			'email'       => ['required', 'email'], 
-			'user_dob'    => ['required', 'string'],
+			'user_dob'    => ['required', 'date'], //date validation
 			'user_phone'  => ['required',  "regex: $RegExp_Phone" ],
 			'user_n'      => ['required', 'string', 'min:3'],
 			'user_salary' => ['required',  'numeric'], //numeric to accept float
 			'user_rank'   => ['required', 'integer', ],
-			'user_superior'   => ['required', 'int', ],
-			'user_hired_at'   => ['required',],
-
+			'user_superior'   => ['required', 'integer', ],
+			'user_hired_at'   => ['required', 'date'], //date validation
 			//image validation https://hdtuto.com/article/laravel-57-image-upload-with-validation-example
-			'image' => ['required',  'mimes:jpeg,png,jpg,gif,svg', 'max:2048' ],
+			'image' => ['required',  'mimes:png,jpg', 'max:5120' ], //2mb = 2048 //'mimes:jpeg,png,jpg,gif,svg'
 			
 		];
 
@@ -166,17 +174,17 @@ class YajraDataTablesCrudController extends Controller
        $RegExp_Phone = '/^[+]380[\d]{1,4}[0-9]+$/'; //phone regexp
 		
 		$rules = [
-			'first_name'  => ['required', 'string', 'min:3'], 
+			'first_name'  => ['required', 'string', 'min:3', 'max:252'], 
 			'email'       => ['required', 'email'], 
-			'user_dob'    => ['required', 'string'],
+			'user_dob'    => ['required', 'date'], //date validation
 			'user_phone'  => ['required',  "regex: $RegExp_Phone" ],
 			'user_n'      => ['required', 'string', 'min:3'],
-			'user_salary' => ['required',  'numeric'], //numeric to accept float
+			'user_salary' => ['required',  'numeric', 'between:1, 500.00'], //numeric to accept float
 			'user_rank'   => ['required', 'integer', ],
-			'user_superior'   => ['required', 'int', ],
-			'user_hired_at'   => ['required',],
+			'user_superior'   => ['required', 'integer', ],
+			'user_hired_at'   => ['required', 'date'], //date validation
 			//image validation https://hdtuto.com/article/laravel-57-image-upload-with-validation-example
-			'image' => ['required',  'mimes:jpeg,png,jpg,gif,svg', 'max:2048' ],
+			'image' => ['required',  'mimes:png,jpg', 'max:5120' ], //2mb = 2048 //'mimes:jpeg,png,jpg,gif,svg'
 			
 		];
 
@@ -187,13 +195,57 @@ class YajraDataTablesCrudController extends Controller
             return response()->json(['errors' => $error->errors()->all()]);
         }
 
-
+        //https://stackoverflow.com/questions/59300544/how-to-reduce-size-of-image-in-laravel-when-upload
         //Move uploaded image to the specified folder 
-		$imageName = time(). '_' . $request->image->getClientOriginalName(); //new name (time + originalName)
-		request()->image->move(public_path('images/employees'), $imageName);
+		
+		/*
+		// Resize and center image 
+		$width = 200;
+        $height = 200;
+
+        // тип содержимого
+        header('Content-Type: image/jpeg');
+
+       // получение новых размеров
+       list($width_orig, $height_orig) = getimagesize($request->image);
+
+       $ratio_orig = $width_orig/$height_orig;
+
+        if ($width/$height > $ratio_orig) {
+            $width = $height*$ratio_orig;
+        } else {
+             $height = $width/$ratio_orig;
+        }
+
+        //retains the original image's aspect ratio when resizing, and doesn't resize or resample if the original width and height is smaller then the desired resize.          $image_p = imagecreatetruecolor($width, $height);
+        $image = imagecreatefromjpeg($request->image);
+        imagecopyresampled($image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);/finalImage, sourceImage
+        //rename($image_p, $imageName);	
+		// End Resize and center image 
+		*/
 		
 		
-		//delete a prev image from folder '/images/employees/'
+		//Intervention Lib resizing ----- //https://stackoverflow.com/questions/59300544/how-to-reduce-size-of-image-in-laravel-when-upload
+		
+		$image = $request->file('image');
+		$imageName = time(). '_' . $request->image->getClientOriginalName(); //new name (time + originalName). //Prev variant (before implement Intervention resize). Working!!!
+        //$input['imagename'] = time().  '_' . $request->image->getClientOriginalName(); // . '.'.$image->getClientOriginalExtension(); //create name: time+name+extension
+
+        $destinationPath = public_path('images/employees');
+        $img = Image::make($image->getRealPath());
+        $img->resize(300, 300, function ($constraint) {
+            $constraint->aspectRatio();
+        })->save($destinationPath.'/' . $imageName);
+
+       //$destinationPath = public_path('images/employees');
+       //$image->move($destinationPath, $imageName);
+	   
+		//END Intervention Lib resizing -----
+		
+		//request()->image->move(public_path('images/employees'), $imageName);  //Prev variant (before implement Intervention resize). Working!!!
+		
+		
+		//delete a prev/old image from folder '/images/employees/'
 		$product = Abz_Employees::where('id', $request->hidden_id)->first(); //found image 
 		if(file_exists(public_path('images/employees/' . $product->image))){
 		    \Illuminate\Support\Facades\File::delete('images/employees/' . $product->image);
@@ -209,7 +261,7 @@ class YajraDataTablesCrudController extends Controller
 			'superior_id' =>  $request->user_superior,
 			'salary'      =>  $request->user_salary,
 			'hired_at'    =>  $request->user_hired_at,
-			'image'       =>   $imageName, //$request->image,
+			'image'       =>  $imageName, //$input['imagename'], //$imageName, //$request->image,
         );
 
         if (Abz_Employees::whereId($request->hidden_id)->update($form_data)) {

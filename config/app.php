@@ -162,7 +162,8 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
 		
-		Yajra\DataTables\DataTablesServiceProvider::class, //my datatables
+		Yajra\DataTables\DataTablesServiceProvider::class, //my Yajra datatables
+		Intervention\Image\ImageServiceProvider::class, // Intervention
 
         /*
          * Package Service Providers...
@@ -228,7 +229,8 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 		
-		'DataTables' => Yajra\DataTables\Facades\DataTables::class, //my datatables
+		'DataTables' => Yajra\DataTables\Facades\DataTables::class, //my Yajra datatables
+		'Image' => Intervention\Image\Facades\Image::class,
 
     ],
 
