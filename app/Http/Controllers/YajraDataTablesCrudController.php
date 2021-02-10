@@ -65,6 +65,8 @@ class YajraDataTablesCrudController extends Controller
         //
     }
 
+
+
     /**
      * Store a newly created resource in storage. Done
      *
@@ -161,6 +163,10 @@ class YajraDataTablesCrudController extends Controller
 	
 	
 	
+	
+	
+	
+	
     /**
      * Update the specified resource in storage. Done
      *
@@ -224,27 +230,42 @@ class YajraDataTablesCrudController extends Controller
 		// End Resize and center image 
 		*/
 		
+		//------------------------------------------------------------------
+		//Intervention Lib, resizing image + save ----- //https://stackoverflow.com/questions/59300544/how-to-reduce-size-of-image-in-laravel-when-upload
 		
-		//Intervention Lib resizing ----- //https://stackoverflow.com/questions/59300544/how-to-reduce-size-of-image-in-laravel-when-upload
-		
-		$image = $request->file('image');
+		$image = $request->file('image'); //uploded image 
 		$imageName = time(). '_' . $request->image->getClientOriginalName(); //new name (time + originalName). //Prev variant (before implement Intervention resize). Working!!!
         //$input['imagename'] = time().  '_' . $request->image->getClientOriginalName(); // . '.'.$image->getClientOriginalExtension(); //create name: time+name+extension
 
         $destinationPath = public_path('images/employees');
         $img = Image::make($image->getRealPath());
+		
+		//watermark
+		$watermark = Image::make('images/water-mark.png'); //watermark
+		$watermark->resize(20, 20); //watermark resize
+		
+		//resize avatar image to (300, 300) + adding watermark + save. Uses method chaining. Alternatively can do separately $img->resize(); $img->insert(); $img-save();
         $img->resize(300, 300, function ($constraint) {
             $constraint->aspectRatio();
-        })->save($destinationPath.'/' . $imageName);
+        })
+		  ->insert($watermark, 'bottom-right', 10, 10) // insert watermark at bottom-right corner with 10px offset
+		  ->save($destinationPath.'/' . $imageName); //save
+
 
        //$destinationPath = public_path('images/employees');
        //$image->move($destinationPath, $imageName);
 	   
-		//END Intervention Lib resizing -----
+	   //END Intervention Lib, resizing image + save  -----
+	   //------------------------------------------------------------------
+	   
+	   //request()->image->move(public_path('images/employees'), $imageName);  //Prev variant (before implement Intervention resize). Working!!!
 		
-		//request()->image->move(public_path('images/employees'), $imageName);  //Prev variant (before implement Intervention resize). Working!!!
 		
-		
+
+
+
+
+
 		//delete a prev/old image from folder '/images/employees/'
 		$product = Abz_Employees::where('id', $request->hidden_id)->first(); //found image 
 		if(file_exists(public_path('images/employees/' . $product->image))){

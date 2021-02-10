@@ -414,13 +414,18 @@ $(document).ready(function(){
                  html = '<div class="alert alert-success">' + data.success + '</div>';
                  $('#sample_form')[0].reset();
                  $('#user_table').DataTable().ajax.reload();
+				 //
+				 $(".modal-title").html('Successfully');
              }
              $('#form_result').html(html);
+			
+			 
          },
-		 error: function (error) {
+		 error: function (error) { //don't need this ??????
 			 console.log(error);
              $(".modal-title").stop().fadeOut("slow",function(){ $(this).html("<h4 style='color:red;padding:3em;'>ERROR!!! <br> Failed Saving/Editing</h4>")}).fadeIn(2000);
-         }	
+             //$("html, body").animate({ scrollTop: 0 }, "slow");	 //scroll
+		 }	
 		 
      });
  });

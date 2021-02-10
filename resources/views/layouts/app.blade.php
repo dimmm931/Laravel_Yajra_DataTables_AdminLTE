@@ -61,6 +61,11 @@
 						<li class="nav-item {{ Request::is('yajradt2*') ? 'active' : '' }}">
 							<a class="nav-link" href="{{ route('/yajradt2') }}">{{ __('Yajra Dt Crud-2') }}</a>
 						</li>
+						
+						<li class="nav-item {{ Request::is('admin*') ? 'active' : '' }}">
+							<!--<a class="nav-link" href="{{-- route('admin/compass') --}}">{{ __('Voyager') }}</a>-->
+							<a class="nav-link" href="http://localhost/abz-laravel_6/public/admin/users"> {{ __('Voyager') }} </a>
+						</li>
 						<!-- END Common links (make link highlighted )-->
 						
 

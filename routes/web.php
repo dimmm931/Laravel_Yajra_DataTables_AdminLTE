@@ -43,3 +43,8 @@ Route::get('sample/destroy/{id}', 'YajraDataTablesCrudController@destroy');
 Route::get('/sample/edit/{id}',    'YajraDataTablesCrudController@getFormVal')->name('/sample.edit'); //Fill Edit form with values
 
 
+
+//Automatically added by Voyager
+Route::group(['prefix' => 'admin'], function () {
+    Voyager::routes();
+});
