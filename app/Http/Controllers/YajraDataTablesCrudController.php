@@ -68,7 +68,7 @@ class YajraDataTablesCrudController extends Controller
 
 
     /**
-     * Store a newly created resource in storage. Done
+     * Store a newly created resource in storage. Done. Image upload is Required.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -100,10 +100,37 @@ class YajraDataTablesCrudController extends Controller
             return response()->json(['errors' => $error->errors()->all()]);
         }
 
+        
+		//------------------------------------------------------------------
+		//Intervention Lib, resizing image + save ----- //https://stackoverflow.com/questions/59300544/how-to-reduce-size-of-image-in-laravel-when-upload
+	    if($request->file('image') != null){ //
+		    $image = $request->file('image'); //uploded image 
+		    $imageName = time(). '_' . $request->image->getClientOriginalName(); //new name (time + originalName). //Prev variant (before implement Intervention resize). Working!!!
+            //$input['imagename'] = time().  '_' . $request->image->getClientOriginalName(); // . '.'.$image->getClientOriginalExtension(); //create name: time+name+extension
 
+            $destinationPath = public_path('images/employees');
+            $img = Image::make($image->getRealPath());
+		
+		    //watermark
+		    $watermark = Image::make('images/water-mark.png'); //watermark
+		    $watermark->resize(20, 20); //watermark resize
+		
+		    //resize avatar image to (300, 300) + adding watermark + save. Uses method chaining. Alternatively can do separately $img->resize(); $img->insert(); $img-save();
+            $img->resize(300, 300, function ($constraint) {
+                $constraint->aspectRatio();
+            })
+		        ->insert($watermark, 'bottom-right', 10, 10) // insert watermark at bottom-right corner with 10px offset
+		        ->save($destinationPath.'/' . $imageName); //save
+        }
+
+           //$destinationPath = public_path('images/employees');
+           //$image->move($destinationPath, $imageName);
+	   
+	   //END Intervention Lib, resizing image + save  -----
+	   //------------------------------------------------------------------
+	   
         //Move uploaded image to the specified folder 
-		$imageName = time(). '_' . $request->image->getClientOriginalName(); //new name (time + originalName)
-		request()->image->move(public_path('images/employees'), $imageName);
+		//request()->image->move(public_path('images/employees'), $imageName); //Prev variant (before implement Intervention resize). Working!!!
 		
 		
 		
@@ -168,7 +195,7 @@ class YajraDataTablesCrudController extends Controller
 	
 	
     /**
-     * Update the specified resource in storage. Done
+     * Update the specified resource in storage. Done. Image upload is NOT MANDATORY Required.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Abz_Employees  $sample_data
@@ -190,7 +217,8 @@ class YajraDataTablesCrudController extends Controller
 			'user_superior'   => ['required', 'integer', ],
 			'user_hired_at'   => ['required', 'date'], //date validation
 			//image validation https://hdtuto.com/article/laravel-57-image-upload-with-validation-example
-			'image' => ['required',  'mimes:png,jpg', 'max:5120' ], //2mb = 2048 //'mimes:jpeg,png,jpg,gif,svg'
+			//image NOT OBLIGATORY REQUIRED for UPDATE
+			'image' => [/*'required',*/  'mimes:png,jpg', 'max:5120' ], //2mb = 2048 //'mimes:jpeg,png,jpg,gif,svg'
 			
 		];
 
@@ -232,28 +260,28 @@ class YajraDataTablesCrudController extends Controller
 		
 		//------------------------------------------------------------------
 		//Intervention Lib, resizing image + save ----- //https://stackoverflow.com/questions/59300544/how-to-reduce-size-of-image-in-laravel-when-upload
-		
-		$image = $request->file('image'); //uploded image 
-		$imageName = time(). '_' . $request->image->getClientOriginalName(); //new name (time + originalName). //Prev variant (before implement Intervention resize). Working!!!
-        //$input['imagename'] = time().  '_' . $request->image->getClientOriginalName(); // . '.'.$image->getClientOriginalExtension(); //create name: time+name+extension
+	    if($request->file('image') != null){ //if a user uploaded an image which is NOT OBLIGATORY REQUIRED for UPDATE
+		    $image = $request->file('image'); //uploded image 
+		    $imageName = time(). '_' . $request->image->getClientOriginalName(); //new name (time + originalName). //Prev variant (before implement Intervention resize). Working!!!
+            //$input['imagename'] = time().  '_' . $request->image->getClientOriginalName(); // . '.'.$image->getClientOriginalExtension(); //create name: time+name+extension
 
-        $destinationPath = public_path('images/employees');
-        $img = Image::make($image->getRealPath());
+            $destinationPath = public_path('images/employees');
+            $img = Image::make($image->getRealPath());
 		
-		//watermark
-		$watermark = Image::make('images/water-mark.png'); //watermark
-		$watermark->resize(20, 20); //watermark resize
+		    //watermark
+		    $watermark = Image::make('images/water-mark.png'); //watermark
+		    $watermark->resize(20, 20); //watermark resize
 		
-		//resize avatar image to (300, 300) + adding watermark + save. Uses method chaining. Alternatively can do separately $img->resize(); $img->insert(); $img-save();
-        $img->resize(300, 300, function ($constraint) {
-            $constraint->aspectRatio();
-        })
-		  ->insert($watermark, 'bottom-right', 10, 10) // insert watermark at bottom-right corner with 10px offset
-		  ->save($destinationPath.'/' . $imageName); //save
+		    //resize avatar image to (300, 300) + adding watermark + save. Uses method chaining. Alternatively can do separately $img->resize(); $img->insert(); $img-save();
+            $img->resize(300, 300, function ($constraint) {
+                $constraint->aspectRatio();
+            })
+		        ->insert($watermark, 'bottom-right', 10, 10) // insert watermark at bottom-right corner with 10px offset
+		        ->save($destinationPath.'/' . $imageName); //save
+        }
 
-
-       //$destinationPath = public_path('images/employees');
-       //$image->move($destinationPath, $imageName);
+           //$destinationPath = public_path('images/employees');
+           //$image->move($destinationPath, $imageName);
 	   
 	   //END Intervention Lib, resizing image + save  -----
 	   //------------------------------------------------------------------
@@ -272,6 +300,7 @@ class YajraDataTablesCrudController extends Controller
 		    \Illuminate\Support\Facades\File::delete('images/employees/' . $product->image);
 		}
 		
+		//Forming array with data to update
         $form_data = array(
             'name'        =>  $request->first_name, //DB column => input name
             'email'       =>  $request->email,
@@ -282,8 +311,13 @@ class YajraDataTablesCrudController extends Controller
 			'superior_id' =>  $request->user_superior,
 			'salary'      =>  $request->user_salary,
 			'hired_at'    =>  $request->user_hired_at,
-			'image'       =>  $imageName, //$input['imagename'], //$imageName, //$request->image,
+			//'image'       =>  $imageName, //$input['imagename'], //$imageName, //$request->image,
         );
+		
+		//if a user uploaded an image which is NOT OBLIGATORY REQUIRED for Update, then add this image to $form_data 
+		if($request->file('image')!= null){
+			$form_data['image'] = $imageName;
+		}
 
         if (Abz_Employees::whereId($request->hidden_id)->update($form_data)) {
             return response()->json(['success' => 'Data is successfully updated']);

@@ -24,18 +24,29 @@ class Abz_Employees extends Model
     ]; 
 
     /**
-     * hasOne Relation
+     *  belongsTo Relation (the inverse of a hasOne)
      *
      * @param  
      * @return string
      */
-    public function getRank() //hasOne Relation. Same implementation as hasOne relation in JSON (REST API). See ReadMe_Laravel_Com_Commands.txt
+    public function getRank() //belongsTo Relation (the inverse of a hasOne). Same implementation as hasOne(belongsTo) relation in JSON (REST API). See ReadMe_Laravel_Com_Commands.txt
     {
-		return $this->hasOne('App\Models\Abz\Abz_Ranks', 'id', 'rank_id');      //$this->belongsTo('App\modelName', 'foreign_key_that_table', 'parent_id_this_table');}
-    }
+		//return $this->hasOne('App\Models\Abz\Abz_Ranks', 'id', 'rank_id');      //$this->belongsTo('App\modelName', 'foreign_key_that_table', 'parent_id_this_table');}
+        return $this->belongsTo('App\Models\Abz\Abz_Ranks', 'rank_id', 'id');   //'foreign_key', 'owner_key' i.e 'parent_id_this_table', 'foreign_key_that_table'
+	}
 
-     public function getSuperior() //hasOne Relation. Same implementation as hasOne relation in JSON (REST API). See ReadMe_Laravel_Com_Commands.txt
+
+
+
+    /**
+     * belongsTo Relation (the inverse of a hasOne) //hasOne Relation
+     *
+     * @param  
+     * @return string
+     */
+     public function getSuperior() //belongsTo Relation //hasOne Relation. Same implementation as hasOne relation in JSON (REST API). See ReadMe_Laravel_Com_Commands.txt
     {
-		return $this->hasOne('App\Models\Abz\Abz_Employees', 'id', 'superior_id');      //$this->belongsTo('App\modelName', 'foreign_key_that_table', 'parent_id_this_table');}
-    }	
+		//return $this->hasOne('App\Models\Abz\Abz_Employees', 'id', 'superior_id');      //$this->belongsTo('App\modelName', 'foreign_key_that_table', 'parent_id_this_table');}
+        return $this->belongsTo('App\Models\Abz\Abz_Employees', 'superior_id', 'id');
+	}	
 }

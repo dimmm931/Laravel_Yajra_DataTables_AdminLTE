@@ -250,7 +250,7 @@
 		    <div class="form-group">
                <label class="control-label col-md-4">Image: </label>
                <div class="col-md-8"> 
-                   <input type="file" name="image" id="image" class="form-control" />
+                   <input type="file" name="image" id="image" class="form-control" /> <span class="text-danger" id="imgRequired"></span>
                </div>
            </div>
 		   
@@ -338,7 +338,7 @@ $(document).ready(function(){
 
   /*
   |--------------------------------------------------------------------------
-  |
+  | user clicks "Create" and it will show a Modal with Form
   |--------------------------------------------------------------------------
   |
   |
@@ -352,6 +352,7 @@ $(document).ready(function(){
 
 
      $("#sample_form").trigger('reset')//clears any prev inputs;
+	 $('#imgRequired').html('image is required for create');
      $('#formModal').modal('show');
  });
 
@@ -409,23 +410,28 @@ $(document).ready(function(){
                      html += '<p>' + data.errors[count] + '</p>';
                  }
                  html += '</div>';
+				 
+				$(".modal-title").stop().fadeOut("slow",function(){ $(this).html("<h4 style='color:red;padding:3em;'>ERROR!!! <br> Failed Saving/Editing</h4>")}).fadeIn(2000);
+
+				 
              }
              if(data.success) {
                  html = '<div class="alert alert-success">' + data.success + '</div>';
                  $('#sample_form')[0].reset();
                  $('#user_table').DataTable().ajax.reload();
 				 //
-				 $(".modal-title").html('Successfully');
+				 $(".modal-title").html('Successfully done');
              }
              $('#form_result').html(html);
+			 $('#formModal').animate({ scrollTop: 0 }, 'slow'); //scroll modal to top
 			
 			 
-         },
+         },/*
 		 error: function (error) { //don't need this ??????
 			 console.log(error);
              $(".modal-title").stop().fadeOut("slow",function(){ $(this).html("<h4 style='color:red;padding:3em;'>ERROR!!! <br> Failed Saving/Editing</h4>")}).fadeIn(2000);
              //$("html, body").animate({ scrollTop: 0 }, "slow");	 //scroll
-		 }	
+		 }	*/
 		 
      });
  });
@@ -436,7 +442,7 @@ $(document).ready(function(){
 
  /*
   |--------------------------------------------------------------------------
-  | Fill in edit form with values from DB, when u click Edit
+  | When clicks 'Edit', it will open modal with Form and Fill in edit form with values from DB, when u click Edit
   |--------------------------------------------------------------------------
   |
   |
@@ -454,12 +460,14 @@ $(document).ready(function(){
 	 $('#user_rank')      .val("");  
 	 $('#user_superior')  .val("");  
 	 $('#user_hired_at')  .val(""); 
+	 $('#start').val('').prop('selected', true);     //resets Superior <select> input
+	 $('#startRank').val('').prop('selected', true); //resets rank <select> input
 	 
 
-
+    
 	 
      $("#emplyee_photo").attr("src", "images/loader.gif"); //changing the image to loader
-
+     $('#imgRequired').html('image is not required for edit');
 
      var id = $(this).attr('id');
      $('#form_result').html('');
@@ -542,7 +550,7 @@ $(document).ready(function(){
 
   /*
   |--------------------------------------------------------------------------
-  | When user changes Superior in dropdown
+  | When user changes Superior in dropdown <select><option>
   |--------------------------------------------------------------------------
   |
   |
@@ -564,7 +572,7 @@ $(document).ready(function(){
 	   
   /*
   |--------------------------------------------------------------------------
-  | When user changes Rank in dropdown
+  | When user changes Rank in dropdown <select><option>
   |--------------------------------------------------------------------------
   |
   |
