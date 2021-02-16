@@ -32,7 +32,7 @@
   
   
   
-  <!--- Users -->
+  <!--- Users DataTables, $users passed from Controller, + additionally initiated in JS (in this view) -->
   <div class="row">
     <div class="col-xs-12">
       <div class="box">
@@ -42,6 +42,7 @@
           @endif     
         </div>
         <div class="box-body">
+		  <hr><h4>Table {users} via Datatables <span style="font-size:0.6em">(simple variant, without edit/delete, JS inited with one line, data $users passed from Controller )</span></h4><hr>
           <table id="laravel_datatable" class="table table-bordered table-striped">
             <thead>
               <tr>
@@ -70,14 +71,15 @@
     </div>
     <!-- /.col -->
   </div>
-   <!-- End Users -->
+   <!-- End Users DataTables, $users passed from Controller, + additionally initiated in JS (in this view) -->
   
   
   
-  <!-- Students via DataTable -->
+  
+  <!-------- Students (i.e {abz_employees}) via DataTable -------------->
   <div class="row">
     <div class="col-xs-12">
-	  <hr><h4>Table {abz_employees} via Datatables</h4>
+	  <hr><hr><h4>Table {abz_employees} via Datatables</h4>
       <div class="box">
         <div class="box-header">
           @if(Session::has('message'))
@@ -105,7 +107,9 @@
     </div>
     <!-- /.col -->
   </div>
-   <!-- End Students -->
+   <!-- End Students (i.e {abz_employees}) via DataTable  -->
+   
+   
 @stop
 
 @section('js')
@@ -120,7 +124,7 @@
   
   $(document).ready( function () {
  
-	//users Table DataTable JS
+	//users Table DataTable JS init (without ajax, data is passed in Controller -> function adminlte()) => $users = User::all()
     $('#laravel_datatable').DataTable();
 	
  

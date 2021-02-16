@@ -84,6 +84,7 @@ class Abz_Employees_Seeder extends Seeder {
                 'superior_id' => rand(1, $NUMBER_OF_EMPLOYEES), //random string between min and max number
                 'hired_at'    => $faker->dateTimeThisMonth(),
 				'salary'      => rand(2000, 5000), //random string between min and max number
+				//'text'      => $faker->realText($maxNbChars = 200, $indexSize = 2), //real text
 			]);
         }
   }

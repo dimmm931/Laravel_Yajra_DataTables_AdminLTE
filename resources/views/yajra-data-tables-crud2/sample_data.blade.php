@@ -524,6 +524,8 @@ $(document).ready(function(){
  $(document).on('click', '.delete', function(){
       user_id = $(this).attr('id');
       $('#confirmModal').modal('show');
+	  $('#ok_button').html('OK');               //normalize button if we deleted smth prev
+	  $('#ok_button').prop('disabled', false); //normalize button (make active) if we deleted smth prev
  });
 
  //Deleting after confirm
@@ -531,13 +533,21 @@ $(document).ready(function(){
      $.ajax({
          url:"sample/destroy/"+user_id,
          beforeSend:function(){
-             $('#ok_button').text('Deleting...');
+             $('#ok_button').html('<img style="width:2em" src="images/loader.gif"/> Deleting and reassigning...');
+			 $('#ok_button').prop('disabled', true); //disable the button
+			 
          },
          success:function(data)
-         {
+         {   
+		     console.log(data);
+			 
+			 
              setTimeout(function(){
                  $('#confirmModal').modal('hide');
                  $('#user_table').DataTable().ajax.reload();
+				 
+				 $('#ok_button').html('Deleted OK');
+				 $('#ok_button').prop('disabled', false); //normalize button (make active) 
                  alert('Data Deleted');
               }, 2000);
          }
@@ -550,7 +560,7 @@ $(document).ready(function(){
 
   /*
   |--------------------------------------------------------------------------
-  | When user changes Superior in dropdown <select><option>
+  | When user changes Superior in dropdown <select><option> (in Edit/Create form)
   |--------------------------------------------------------------------------
   |
   |
@@ -572,7 +582,7 @@ $(document).ready(function(){
 	   
   /*
   |--------------------------------------------------------------------------
-  | When user changes Rank in dropdown <select><option>
+  | When user changes Rank in dropdown <select><option> (in Edit/Create form)
   |--------------------------------------------------------------------------
   |
   |

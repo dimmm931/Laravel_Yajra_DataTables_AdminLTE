@@ -47,6 +47,36 @@ class Abz_Employees extends Model
      public function getSuperior() //belongsTo Relation //hasOne Relation. Same implementation as hasOne relation in JSON (REST API). See ReadMe_Laravel_Com_Commands.txt
     {
 		//return $this->hasOne('App\Models\Abz\Abz_Employees', 'id', 'superior_id');      //$this->belongsTo('App\modelName', 'foreign_key_that_table', 'parent_id_this_table');}
-        return $this->belongsTo('App\Models\Abz\Abz_Employees', 'superior_id', 'id');
+        return $this->belongsTo('App\Models\Abz\Abz_Employees', 'superior_id', 'id')->withDefault(['name' => 'Not set']);
 	}	
+	
+	
+	
+	
+	
+	
+	/**
+     * reassign a superior. Upon deleting this employee, find this employee subordinates (whose who has this deleted emplyee's ID as in their 'superior_id' column and assign them other superior with the same rank)
+     *
+     * @param object $data
+     * @return void
+     */
+	function reassignSuperior($data){
+		$delRank    = $data->rank_id; //deleted user rank
+		$delUser_ID = $data->id;
+		
+		//find all deleted user' subordinates
+		$subordinates        = $this->where('superior_id', $delUser_ID)->get();
+        $reassingedSuperiors = $this->where('rank_id', $delRank)->get(); //find users that has same rank as deleted user and can substitute him
+	    
+		
+		//start reasigning each subordinate with a new Superior
+		$i = 0;
+		foreach($subordinates as $v){
+			$this->where('id', $v->id)->update([ 'superior_id' => $reassingedSuperiors[$i]->id ]);	//find each user by ID from $subordinates list and update their 'superior_id' with a person from $reassingedSuperiors list
+		}
+		//return $reassingedSuperiors[0]->name;
+	}
+	
+	
 }

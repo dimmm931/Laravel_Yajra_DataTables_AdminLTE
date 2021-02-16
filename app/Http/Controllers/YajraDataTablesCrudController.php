@@ -342,7 +342,15 @@ class YajraDataTablesCrudController extends Controller
     public function destroy($id)
     {
         $data = Abz_Employees::findOrFail($id);
-        $data->delete();
+		$data->delete(); //delete the user
+
+
+		//reassign a new superior to deleted user's subordinates. Upon deleting this employee, find this employee subordinates (whose who has this deleted emplyee's ID as in their 'superior_id' column and assign them other superior with the same rank)
+		$model = new Abz_Employees();
+		$v = $model->reassignSuperior($data);
+		
+		//return response()->json(['result' => $v]);
+
     }
 	
 	

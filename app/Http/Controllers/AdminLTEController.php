@@ -30,7 +30,7 @@ class AdminLTEController extends Controller
         return view('admin-lte.admin-main-page');
     }
 	
-	
+	//NOT USED???????
 	/**
      * For ajax requests
      *
@@ -63,8 +63,8 @@ class AdminLTEController extends Controller
      */
     public function adminlte()
     {
-		$usersCount = User::count();
-		$users = User::all();
+		$usersCount = User::count(); // for badge
+		$users = User::all(); //for Datatable with users
 		
 		 //$students = Abz_Employees::all();
 		
