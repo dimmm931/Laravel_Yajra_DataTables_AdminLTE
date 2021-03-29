@@ -1,4 +1,7 @@
-
+<?php
+//Minor (semi-working simple without CRUD)example of datatables, for Core/Major version of DataTables with CRUD see /Controllers/YajraDataTablesCrudController + /views/yajra-data-tables-crud2/data_smaple.php
+//Or see simple without CRUD)example of datatables, see /Controllers/AdminLTEController/public function adminlte()
+?>
 @extends('layouts.app')
 
 
@@ -8,7 +11,9 @@
 	
 <div class="container mt-5">
     <h2 class="mb-4">Laravel 7|8 Yajra Datatables Example</h2>
-    <table class="table table-bordered yajra-datatable">
+	<p>Minor (semi-working simple without CRUD)example of datatables, for Core/Major version of DataTables with CRUD see /Controllers/YajraDataTablesCrudController + /views/yajra-data-tables-crud2/data_smaple.php</p>
+    <p> Or see simple without CRUD)example of datatables, see /Controllers/AdminLTEController/public function adminlte()</p>
+	<table class="table table-bordered yajra-datatable">
         <thead>
             <tr>
                 <th>No</th>

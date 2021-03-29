@@ -99,7 +99,13 @@
 				
 				<div class="col-sm-10 col-xs-10 alert-danger" style="margin-top:4em; margin-left:6%; padding:2em; border: 1px solid black;">
 				   <p><center><i class="fa fa-bicycle" style="font-size:48px;"></i></center></p>
-				   <h4>Examples of Laravel Admin LTE, </br> Yajra datatables, </br> Voyager Admin Panel, </br> Intervention Lib, </br> johnnyhuy/laravel-appointment-booking-system, </br> aimeos-laravel can be found here.</h4> 
+				   <h4>
+                     Examples of Laravel Admin LTE, </br> Yajra datatables, </br> Voyager Admin Panel, </br> Intervention Library, 
+				     </br>johnnyhuy/laravel-appointment-booking-system (false),
+                     </br>LaravelDaily/LaraAppointments-QuickAdminPanel (true),				   
+				     </br>aimeos-laravel, 
+                     </br>AvoRed Shopping Cart can be found here.
+                   </h4> 
 				<div>
 				
 				

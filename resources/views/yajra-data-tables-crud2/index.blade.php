@@ -1,4 +1,6 @@
-<?php //NOT USED ?>
+<?php 
+//NOT USED AT ALL, confirm Delete
+?>
 @extends('layouts.app')
 
 

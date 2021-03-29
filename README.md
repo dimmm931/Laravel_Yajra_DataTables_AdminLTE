@@ -1,3 +1,59 @@
+
+## Laravel 6 LTS
+
+- <p>Miscellaneous Laravel application: Laravel Admin LTE, Yajra datatables, Voyager Admin Panel, Intervention Library, LaravelDaily/LaraAppointments-QuickAdminPanel, AvoRed.</p>
+
+
+## Brief overview of the application
+
+![Screenshot](public/images/Screenshots/1.png)
+
+### Yajra Datatables: view, sort rows, CRUD column.
+
+![Screenshot](public/images/Screenshots/2.png)
+
+### Yajra Datatables, add new record via ajax. 
+
+![Screenshot](public/images/Screenshots/3.png)
+
+### Yajra Datatables, delete a row via ajax. 
+
+![Screenshot](public/images/Screenshots/4.png)
+
+### Laravel Admin LTE (with Yajra Datatables).
+
+![Screenshot](public/images/Screenshots/5.png)
+
+### Voyager Admin Panel: Users CRUD.
+
+![Screenshot](public/images/Screenshots/6.png)
+
+### Voyager Admin Panel: RBAC.
+
+![Screenshot](public/images/Screenshots/7.png)
+
+### Voyager Admin Panel: BREAD.
+
+![Screenshot](public/images/Screenshots/8.png)
+
+
+
+
+
+
+
+
+
+Examples of Laravel Admin LTE, </br> Yajra datatables, </br> Voyager Admin Panel, </br> Intervention Library, 
+				     </br>johnnyhuy/laravel-appointment-booking-system (false),
+                     </br>LaravelDaily/LaraAppointments-QuickAdminPanel (true),				   
+				     </br>aimeos-laravel, 
+                     </br>AvoRed Shopping Cart can be found here.
+
+
+
+
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
 <p align="center">

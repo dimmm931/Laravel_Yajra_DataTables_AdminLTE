@@ -1,18 +1,32 @@
-<?php //https://www.webslesson.info/2019/10/laravel-6-crud-application-using-yajra-datatables-and-ajax.html ?>
+<?php 
+//Core/Minor working example of pure Yajra Datatable (i.e without Admin LTE) with CRUD, JS goes in the same file
+//https://www.webslesson.info/2019/10/laravel-6-crud-application-using-yajra-datatables-and-ajax.html 
+?>
 <html>
  <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Laravel Yajra DataTables CRUD using Ajax</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+  
+  <!-- DataTable -->
   <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>  
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" />
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   
-    <!-- Styles -->
-    <link href="{{ asset('css/my_css.css') }}" rel="stylesheet">
- 
+  <!-- Styles -->
+  <link href="{{ asset('css/my_css.css') }}" rel="stylesheet">
+
+  <!-- Sweet Alerts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css"> <!-- Sweet Alert CSS -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js'></script> <!--Sweet Alert JS-->
+
+    <style>
+	.nav-item {margin-left:2em;} /* my css for nav menu links styling */
+    </style>    
+	
+	
  <body>
  
  
@@ -372,68 +386,94 @@ $(document).ready(function(){
  $('#sample_form').on('submit', function(event){
      event.preventDefault();
   
-     if (!confirm('Sure to proceed?')){
-	     alert('Cancelled');
-		 return false;
-     }
-  
-     var action_url = '';
-
-     if($('#action').val() == 'Add') {
-         action_url = "{{ route('sample.store') }}";
-     }
-
-     if($('#action').val() == 'Edit'){
-         action_url = "{{ route('sample.update') }}"; 
-		 alert('Starting editting....');
-     }
-
-     var formData = new FormData(this); //fix to load image via ajax, serialize() wont't work
+    var thatX = this;
+	
+	//Sweet alert confirm
+	swal({
+	    html:true,
+        title: "Are you sure you want <i>to proceed</i> ?",
+        text: "Want to go ahead?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: '#DD6B55',
+        confirmButtonText: 'Yes, go ahead!',
+        cancelButtonText: "No, cancel it!",
+        closeOnConfirm: true,
+        closeOnCancel: false
+    },
+    function(isConfirm){
+        if (!isConfirm){
+			swal({ html:true, title:'Cancelled!', text:'You cancelled <b> the action </b>....</br>  ', type: 'error'});
+            return false;
+        } else {
+	
 	 
-     $.ajax({
-         url: action_url,
-         method:"POST",
-         data: formData, //$(this).serialize(), //fix to load image via ajax, serialize() wont't work
-         dataType:"json",
-		 
-		 cache:false,
-         contentType: false,
-         processData: false,
-				
-         success:function(data)
-         {
-             var html = '';
-             if(data.errors) {
-                 html = '<div class="alert alert-danger">';
-                 for(var count = 0; count < data.errors.length; count++)
-                 {
-                     html += '<p>' + data.errors[count] + '</p>';
-                 }
-                 html += '</div>';
-				 
-				$(".modal-title").stop().fadeOut("slow",function(){ $(this).html("<h4 style='color:red;padding:3em;'>ERROR!!! <br> Failed Saving/Editing</h4>")}).fadeIn(2000);
+            var action_url = '';
 
+            if($('#action').val() == 'Add') {
+                action_url = "{{ route('sample.store') }}";
+            }
+
+            if($('#action').val() == 'Edit'){
+                action_url = "{{ route('sample.update') }}"; 
+		        //alert('Starting editting....');
+		        swal("!", "Starting editting....", "success");
+            }
+
+            var formData = new FormData(thatX); //fix to load image via ajax, serialize() wont't work
+	 
+            $.ajax({
+                url: action_url,
+                method:"POST",
+                data: formData, //$(this).serialize(), //fix to load image via ajax, serialize() wont't work
+                dataType:"json",
+		 
+		        cache:false,
+                contentType: false,
+                processData: false,
+				
+                success:function(data)
+                {
+                    var html = '';
+                    if (data.errors) {
+                        html = '<div class="alert alert-danger">';
+                        for(var count = 0; count < data.errors.length; count++)
+                        {
+                            html += '<p>' + data.errors[count] + '</p>';
+                        }
+                        html += '</div>';
 				 
-             }
-             if(data.success) {
-                 html = '<div class="alert alert-success">' + data.success + '</div>';
-                 $('#sample_form')[0].reset();
-                 $('#user_table').DataTable().ajax.reload();
-				 //
-				 $(".modal-title").html('Successfully done');
-             }
-             $('#form_result').html(html);
-			 $('#formModal').animate({ scrollTop: 0 }, 'slow'); //scroll modal to top
+				        $(".modal-title").stop().fadeOut("slow",function(){ $(this).html("<h4 style='color:red;padding:3em;'>ERROR!!! <br> Failed Saving/Editing</h4>")}).fadeIn(2000);
+				 
+                    }
+                    if(data.success) {
+                        html = '<div class="alert alert-success">' + data.success + '</div>';
+                        $('#sample_form')[0].reset();
+                        $('#user_table').DataTable().ajax.reload();
+				        //
+				        $(".modal-title").html('Successfully done');
+						
+						swal({ html:true, title:'Successfully done!', text:'You successfully <b> performed the action </b>....</br>  ', type: 'success'});
+
+                    }
+                    $('#form_result').html(html);
+			        $('#formModal').animate({ scrollTop: 0 }, 'slow'); //scroll modal to top
 			
 			 
-         },/*
-		 error: function (error) { //don't need this ??????
-			 console.log(error);
-             $(".modal-title").stop().fadeOut("slow",function(){ $(this).html("<h4 style='color:red;padding:3em;'>ERROR!!! <br> Failed Saving/Editing</h4>")}).fadeIn(2000);
-             //$("html, body").animate({ scrollTop: 0 }, "slow");	 //scroll
-		 }	*/
+                },/*
+		        error: function (error) { //don't need this ??????
+			        console.log(error);
+                    $(".modal-title").stop().fadeOut("slow",function(){ $(this).html("<h4 style='color:red;padding:3em;'>ERROR!!! <br> Failed Saving/Editing</h4>")}).fadeIn(2000);
+                    //$("html, body").animate({ scrollTop: 0 }, "slow");	 //scroll
+		        }	*/
 		 
-     });
+            });
+	 
+	         
+	 
+	 	} //end else
+    });
+
  });
 
 
@@ -548,7 +588,9 @@ $(document).ready(function(){
 				 
 				 $('#ok_button').html('Deleted OK');
 				 $('#ok_button').prop('disabled', false); //normalize button (make active) 
-                 alert('Data Deleted');
+                 //alert('Data Deleted');
+				 swal("!", "Data Deleted", "warning");
+
               }, 2000);
          }
      })

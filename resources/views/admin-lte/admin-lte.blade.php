@@ -1,4 +1,6 @@
-
+<?php
+//Admin LTE main page. Contains Users Count BOX, Users DataTables(without CRUD), Students (i.e {abz_employees}) DataTable(with CRUD)
+?>
 
 @extends('adminlte::page')
 
