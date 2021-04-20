@@ -27,10 +27,13 @@ class YajraDataTablesCrudController extends Controller
    
    
    /**
-     * Display a listing of the resource (all users in table Abz_Employees).
-     *
-     * @return \Illuminate\Http\Response
-     */
+    * Display a listing of the resource (all users in table Abz_Employees).
+    *
+    * @return \Illuminate\Http\Response
+    */
+    
+    //NOT USED IN CLEANSED VERSION
+    /*
     public function index(Request $request)
     {
 		//handles ajax request to build a dataTable
@@ -54,6 +57,7 @@ class YajraDataTablesCrudController extends Controller
 		
         return view('yajra-data-tables-crud2.sample_data',  compact('employees', 'ranks'));
     }
+    */
 
     /**
      * Show the form for creating a new resource.

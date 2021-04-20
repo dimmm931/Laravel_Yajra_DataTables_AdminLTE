@@ -235,8 +235,8 @@ return [
             'can'  => 'manage-blog',
         ],
         [
-            'text'        => 'pages',
-            'url'         => 'admin/pages',
+            'text'        => 'pagesS',
+            'url'         => '#', //'admin/pages',
             'icon'        => 'far fa-fw fa-file',
             'label'       => 4,
             'label_color' => 'success',
@@ -248,8 +248,8 @@ return [
             'icon' => 'fas fa-fw fa-user',
         ],
         [
-            'text' => 'change_password',
-            'url'  => 'admin/settings',
+            'text' => 'Users list',
+            'url'  => 'user-lists',
             'icon' => 'fas fa-fw fa-lock',
         ],
 		
@@ -261,8 +261,8 @@ return [
 		
 		[
             'text' => 'Yajra pure DataTables',
-            'url'  => '/yajradt2',
-            'icon' => 'fas fa-glass-cheers',
+            'url'  => '/adminlte',
+            'icon' => 'fas fa-hiking',
         ],
 		
         [

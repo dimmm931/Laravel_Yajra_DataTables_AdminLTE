@@ -59,17 +59,12 @@
 							<a class="nav-link" href="{{ route('home') }}">{{ __('Home') }}</a>
 						</li>
 						
-						<li class="nav-item {{ Request::is('datatables*') ? 'active' : '' }}">
-							<a class="nav-link" href="{{ route('/datatables') }}">{{ __('Datatables') }}</a>
-						</li>
 						
 						<li class="nav-item {{ Request::is('adminlte*') ? 'active' : '' }}">
 							<a class="nav-link" href="{{ route('/adminlte') }}">{{ __('Admin LTE 3 + dt') }}</a>
 						</li>
 						
-						<li class="nav-item {{ Request::is('yajradt2*') ? 'active' : '' }}">
-							<a class="nav-link" href="{{ route('/yajradt2') }}">{{ __('Yajra Dt Crud-2') }}</a>
-						</li>
+					
 						<!-- END Common links (make link highlighted )-->
 						
 

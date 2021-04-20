@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Abz\Abz_Employees;
+use App\Models\Abz\Abz_Ranks;
 use DataTables;
 use App\User;
 
@@ -29,21 +30,47 @@ class AdminLTEController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
 	 
-    public function adminlte()
+    public function adminlte(Request $request)
     {
+        //handles ajax request to build a dataTable
+        if($request->ajax()){
+            $data = Abz_Employees::with('getRank', 'getSuperior')->latest()->get();  //->with('getRank', 'getSuperior') => hasOne Relations, models/Abz_Employees methods getSuperior(), getRank() 
+            //dd($data);
+			return DataTables::of($data)
+                    ->addColumn('action', function($data){
+                        $button = '<button type="button" name="edit" id="'.$data->id.'" class="edit btn btn-primary btn-sm my-btn">_Edit_</button>';
+                        $button .= '&nbsp;&nbsp;&nbsp;<button type="button" name="edit" id="'.$data->id.'" class="delete btn btn-danger btn-sm my-btn">Delete</button>';
+                        return $button;
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+        }
+		//End handles ajax request to build a dataTable
+        
+        
 		$usersCount = User::count(); // for badge
 		$users = User::all(); //for Datatable with users
 		
-		 //$students = Abz_Employees::all();
-		
+        //INJECTED
+		// For regulat http request without ajax
+		$employees = Abz_Employees::with('getRank', 'getSuperior')->latest()->get(); //gets data for superior dropdown
+		$ranks     = Abz_Ranks::latest()->get(); //gets data for ranks dropdown
+        
         return view('admin-lte.admin-lte', [
 		       'usersCount' => $usersCount,
-			   'users' => $users, 
-			   //'students' => $students
+			   'users'      => $users, 
+			   'employees'  => $employees,
+               'ranks'      => $ranks
 			 ]);
     }
 	
 	
+    
+    
+    
+    
+    
+    
 	
     /**
      * Used in public function adminlte(), builds {abz_employees} via Datatables, adds CRUD buttons but they are not eplemented 
@@ -69,52 +96,20 @@ class AdminLTEController extends Controller
 
     }
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+    
+    
     /**
-     * Simple datatables test.
-     * Minor (semi-working simple without CRUD)example of datatables, for Core/Major version of DataTables with CRUD see /Controllers/YajraDataTablesCrudController + /views/yajra-data-tables-crud2/data_smaple.php
-     * Or see simple without CRUD)example of datatables, see /Controllers/AdminLTEController/public function adminlte()
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function index()
-    {
-        return view('admin-lte.datatable-test');
-    }
-	
-	
-	
-	//NOT USED???????
-	/**
-     * For ajax requests
+     * 
      *
-     * @return 
      */
-	public function getStudents(Request $request)
+    public function viewUsers()
     {
-		
-        //if ($request->ajax()) {
-            $data = Abz_Employees::latest()->get();
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('action', function($row){
-                    $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-success btn-sm">Edit</a> <a href="javascript:void(0)" class="delete btn btn-danger btn-sm">Delete</a>';
-                    return $actionBtn;
-                })
-                ->rawColumns(['action'])
-                ->make(true);
-        //}
+		$users = User::all(); //for Datatable with users
+				
+        return view('admin-lte.lte_users-view', [
+			   'users' => $users, 
+			 ]);
     }
-	
-	
-	
 	
 	
 	
