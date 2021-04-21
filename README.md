@@ -1,7 +1,7 @@
 
 ## Laravel 6 LTS Yajra datatables + Admin LTE 
 
-- <p>Admin LTE with Yajra datatables (pagination, sorting, searching and ajax CRUD operation)</p>
+- <p>Admin LTE with Yajra datatables (pagination, sorting, searching and ajax CRUD operation via REST Api Endpoint)</p>
 - <p>App works on SQL DB, to run the application on <b>http://localhost</b>, copy the repository code and run <b>composer install</b> to load all dependencies. </p>
 - <p>Create root file <b>.env</b> with your DB seetings based on  <b>.env.example</b>  </p>
 - <p>Run <b>php artisan key:generate </b> </p>
@@ -14,13 +14,31 @@
 
 ![Screenshot](public/images/Screenshots/1.png)
 
-### Yajra Datatables: view, sort rows, CRUD column.
-
 ![Screenshot](public/images/Screenshots/2.png)
 
+### Yajra Datatables:  CRUD buttons.
 
+![Screenshot](public/images/Screenshots/3.png)
 
+### Yajra Datatables: create new record.
 
+![Screenshot](public/images/Screenshots/4.png)
+
+### Yajra Datatables: edit an existing record.
+
+![Screenshot](public/images/Screenshots/5.png)
+
+![Screenshot](public/images/Screenshots/6.png)
+
+![Screenshot](public/images/Screenshots/7.png)
+
+### Yajra Datatables: delete a existing record.
+
+![Screenshot](public/images/Screenshots/8.png)
+
+### Yajra Datatables: search.
+
+![Screenshot](public/images/Screenshots/9.png)
 
 
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>

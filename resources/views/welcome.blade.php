@@ -96,7 +96,6 @@
                     <a href="https://github.com/laravel/laravel">GitHub</a>
                 </div>
 				
-				
 				<div class="col-sm-10 col-xs-10 alert-danger" style="margin-top:4em; margin-left:6%; padding:2em; border: 1px solid black;">
 				   <p><center><i class="fa fa-bicycle" style="font-size:48px;"></i></center></p>
 				   <h4>

@@ -11,24 +11,17 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/',     'AdminLTEController@adminlte');
+Route::get('/home', 'AdminLTEController@adminlte')->name('home');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
+//Route::get('/home', 'HomeController@index')->name('home');
 
 //Admin LTE with Datatables
 Route::get('adminlte',       'AdminLTEController@adminlte')->name('/adminlte');
 Route::get('/country-list',  'AdminLTEController@getList');
 Route::get('user-lists',     'AdminLTEController@viewUsers')->name('/user-lists');
-
-
 
 
 
@@ -41,3 +34,8 @@ Route::get('sample/destroy/{id}', 'YajraDataTablesCrudController@destroy');
 
 Route::get('/sample/edit/{id}',    'YajraDataTablesCrudController@getFormVal')->name('/sample.edit'); //Fill Edit form with values
 
+/* CHANGE!!!!!!
+Route::post('articles', 'Rest@store');
+Route::put('articles/{id}', 'Rest@update');
+Route::delete('articles/{id}', 'Rest@delete');
+*/

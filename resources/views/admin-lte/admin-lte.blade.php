@@ -34,6 +34,7 @@
   
   
   <!--- Users DataTables, $users passed from Controller, + additionally initiated in JS (in this view) -->
+
   <div class="row">
     <div class="col-xs-12">
       <div class="box">
@@ -43,7 +44,7 @@
           @endif     
         </div>
         <div class="box-body">
-		  <hr><h4>Table {users} via Datatables <span style="font-size:0.6em">(simple variant, without edit/delete, JS inited with one line, data $users passed from Controller )</span></h4><hr>
+		  <hr><h4>Table {users} via Datatables </h4><hr>
           <table id="laravel_datatable" class="table table-bordered table-striped">
             <thead>
               <tr>
@@ -72,27 +73,25 @@
     </div>
     <!-- /.col -->
   </div>
+  
    <!-- End Users DataTables, $users passed from Controller, + additionally initiated in JS (in this view) -->
   
   
-  <!----------------- Yajra true  ----------------->
-  
-   <div class="container"> 
-  
-     <br />
-     <h3 align="center">Laravel Yajra DataTables CRUD using Ajax <span class="small">(on /models/Abz/Abz_Employees)</h3></h3>
-     <br />
-     <div align="right">
-      <button type="button" name="create_record" id="create_record" class="btn btn-success btn-sm">Create Record</button>
-     </div>
-     <br/>
-     
-  <div class="table-responsive">
-  <hr><h4>Laravel Yajra DataTables CRUD using Ajax <span class="small">(on /models/Abz/Abz_Employees)</h4><hr>
+    <!----------------- Yajra true  ----------------->
+    <div class="container"> 
+    <br />
+    <br />
+        <div class="table-responsive">
+            <hr>
+            <h5>Laravel Yajra DataTable using Ajax <span class="small">(on /models/Abz/Abz_Employees)</h5>
     
+            <div align="right">
+                <button type="button" name="create_record" id="create_record" class="btn btn-success btn-sm">Create Record</button>
+            </div>
+            <br/>
     
-    <table id="user_table" class="table table-bordered table-striped">
-     <thead>
+            <table id="user_table" class="table table-bordered table-striped">
+                <thead>
         <tr>
             <th>Name</th>
             <th>Email</th>
@@ -358,7 +357,9 @@
      $('#action').val('Add');
      $('#form_result').html('');
      $("#emplyee_photo").attr("src", "images/loader.gif"); //setting the image to loader, if photo there was prev (e.g while editing)
-
+     setTimeout(function(){  
+        $("#emplyee_photo").attr("src", "images/profile.png"); //setting the image to loader, if photo there was prev (e.g while editing)
+     }, 1000);
 
      $("#sample_form").trigger('reset')//clears any prev inputs;
 	 $('#imgRequired').html('image is required for create');
