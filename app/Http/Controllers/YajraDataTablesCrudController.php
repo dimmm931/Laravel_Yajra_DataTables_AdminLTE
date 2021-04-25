@@ -151,7 +151,7 @@ class YajraDataTablesCrudController extends Controller
 			'image'       =>  $imageName, //$request->image,
         );
 
-        if ( Abz_Employees::create($form_data)) {
+        if (Abz_Employees::create($form_data)) {
             return response()->json(['success' => 'Data Added successfully']);
 		} else {
 			return response()->json(['success' => 'Failed to add data']);
@@ -354,6 +354,7 @@ class YajraDataTablesCrudController extends Controller
 		$v = $model->reassignSuperior($data);
 		
 		//return response()->json(['result' => $v]);
+        return 204;
 
     }
 	

@@ -3,6 +3,8 @@
 ?>
 
 @extends('adminlte::page')
+<!-- CSFR meta token --> 
+<meta name="_token" content="{{ csrf_token() }}"/>
 
 @section('title', 'Dashboard')
 
@@ -123,8 +125,8 @@
 		 
 		 <img src="images/loader.gif" id="emplyee_photo" alt='image'/> <!-- Photo -->
 		 
-         <form method="post" id="sample_form" class="form-horizontal" enctype="multipart/form-data">
-          @csrf
+         <form id="sample_form" class="form-horizontal" enctype="multipart/form-data">
+          <!-- @csrf -->
 		  
           <div class="form-group">
             <label class="control-label col-md-4" >Name : </label>
@@ -404,23 +406,38 @@
         } else {
 	
 	 
-            var action_url = '';
+            var action_url    = '';
+            //var action_method = '';
 
+            var formData = new FormData(thatX); //fix to load image via ajax, serialize() wont't work
+            
+            
             if($('#action').val() == 'Add') {
                 action_url = "{{ route('sample.store') }}";
+                //action_method  = "POST";
             }
 
             if($('#action').val() == 'Edit'){
                 action_url = "{{ route('sample.update') }}"; 
+                //action_method  = "PUT"; //put
+                formData. append("_method", "PUT"); //fix for PUT method
 		        //alert('Starting editting....');
 		        swal("!", "Starting editting....", "success");
             }
 
-            var formData = new FormData(thatX); //fix to load image via ajax, serialize() wont't work
+            
 	 
+            //preapare CSRF token for ajax DELETE  
+            
+             $.ajaxSetup({
+                 headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                }
+            }); 
+    
             $.ajax({
                 url: action_url,
-                method:"POST",
+                method: "POST",//action_method,//"POST",
                 data: formData, //$(this).serialize(), //fix to load image via ajax, serialize() wont't work
                 dataType:"json",
 		 
@@ -443,6 +460,7 @@
 				 
                     }
                     if(data.success) {
+                        alert(data.success);
                         html = '<div class="alert alert-success">' + data.success + '</div>';
                         $('#sample_form')[0].reset();
                         $('#user_table').DataTable().ajax.reload();
@@ -456,12 +474,13 @@
 			        $('#formModal').animate({ scrollTop: 0 }, 'slow'); //scroll modal to top
 			
 			 
-                },/*
+                },
 		        error: function (error) { //don't need this ??????
 			        console.log(error);
+                    $('#formModal').animate({ scrollTop: 0 }, 'slow'); //scroll modal to top
                     $(".modal-title").stop().fadeOut("slow",function(){ $(this).html("<h4 style='color:red;padding:3em;'>ERROR!!! <br> Failed Saving/Editing</h4>")}).fadeIn(2000);
                     //$("html, body").animate({ scrollTop: 0 }, "slow");	 //scroll
-		        }	*/
+		        }	
 		 
             });
 	 
@@ -566,29 +585,44 @@
 
  //Deleting after confirm
  $('#ok_button').click(function(){
+     
+    //preapare CSRF token for ajax DELETE  
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+    });
+
      $.ajax({
          url:"sample/destroy/"+user_id,
+         type: 'DELETE',
          beforeSend:function(){
              $('#ok_button').html('<img style="width:2em" src="images/loader.gif"/> Deleting and reassigning...');
 			 $('#ok_button').prop('disabled', true); //disable the button
 			 
          },
-         success:function(data)
-         {   
+         success:function(data) {   
 		     console.log(data);
+			 if(data = 204){
 			 
-			 
-             setTimeout(function(){
-                 $('#confirmModal').modal('hide');
-                 $('#user_table').DataTable().ajax.reload();
+                setTimeout(function(){
+                     $('#confirmModal').modal('hide');
+                     $('#user_table').DataTable().ajax.reload();
 				 
-				 $('#ok_button').html('Deleted OK');
-				 $('#ok_button').prop('disabled', false); //normalize button (make active) 
-                 //alert('Data Deleted');
-				 swal("!", "Data Deleted", "warning");
+				     $('#ok_button').html('Deleted OK');
+				     $('#ok_button').prop('disabled', false); //normalize button (make active) 
+                     //alert('Data Deleted');
+				     swal("!", "Data Deleted successfully", "success");
 
               }, 2000);
-         }
+             } else {
+                 swal("!", "Deleting crashed", "warning");
+             }
+         },
+         
+         error: function (error) {
+            swal("!", "Error while deleting", "warning");
+         },	
      })
  });
 
