@@ -1,4 +1,5 @@
 <?php 
+//NOT USED IN CLEANSED, Confirm Delete.
 //Core/Minor working example of pure Yajra Datatable (i.e without Admin LTE) with CRUD, JS goes in the same file
 //https://www.webslesson.info/2019/10/laravel-6-crud-application-using-yajra-datatables-and-ajax.html 
 ?>

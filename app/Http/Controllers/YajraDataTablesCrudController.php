@@ -1,16 +1,14 @@
 <?php
-//https://www.webslesson.info/2019/10/laravel-6-crud-application-using-yajra-datatables-and-ajax.html
-
+//REST API Controller, for create, update, delete
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Abz\Abz_Employees;
 use App\Models\Abz\Abz_Ranks;
 use DataTables;
-//use Validator;
 use Illuminate\Support\Facades\Validator;
 use Image; //Intervention
-
+//use Validator;
 
 class YajraDataTablesCrudController extends Controller
 {
@@ -104,7 +102,6 @@ class YajraDataTablesCrudController extends Controller
             return response()->json(['errors' => $error->errors()->all()]);
         }
 
-        
 		//------------------------------------------------------------------
 		//Intervention Lib, resizing image + save ----- //https://stackoverflow.com/questions/59300544/how-to-reduce-size-of-image-in-laravel-when-upload
 	    if($request->file('image') != null){ //
@@ -123,8 +120,8 @@ class YajraDataTablesCrudController extends Controller
             $img->resize(300, 300, function ($constraint) {
                 $constraint->aspectRatio();
             })
-		        ->insert($watermark, 'bottom-right', 10, 10) // insert watermark at bottom-right corner with 10px offset
-		        ->save($destinationPath.'/' . $imageName); //save
+		    ->insert($watermark, 'bottom-right', 10, 10) // insert watermark at bottom-right corner with 10px offset
+		    ->save($destinationPath.'/' . $imageName); //save
         }
 
            //$destinationPath = public_path('images/employees');
@@ -135,8 +132,6 @@ class YajraDataTablesCrudController extends Controller
 	   
         //Move uploaded image to the specified folder 
 		//request()->image->move(public_path('images/employees'), $imageName); //Prev variant (before implement Intervention resize). Working!!!
-		
-		
 		
         $form_data = array(
             'name'        =>  $request->first_name, //DB column => input name
@@ -152,15 +147,11 @@ class YajraDataTablesCrudController extends Controller
         );
 
         if (Abz_Employees::create($form_data)) {
-            return response()->json(['success' => 'Data Added successfully']);
+            return response()->json(['success' => 'Data saved successfully']);
 		} else {
-			return response()->json(['success' => 'Failed to add data']);
-
+			return response()->json(['errors' => 'Failed to save data']);
 		}
     }
-
-
-
 
 
 
@@ -191,9 +182,6 @@ class YajraDataTablesCrudController extends Controller
         }
     }
     */
-	
-	
-	
 	
 	
 	
@@ -233,35 +221,7 @@ class YajraDataTablesCrudController extends Controller
             return response()->json(['errors' => $error->errors()->all()]);
         }
 
-        //https://stackoverflow.com/questions/59300544/how-to-reduce-size-of-image-in-laravel-when-upload
         //Move uploaded image to the specified folder 
-		
-		/*
-		// Resize and center image 
-		$width = 200;
-        $height = 200;
-
-        // тип содержимого
-        header('Content-Type: image/jpeg');
-
-       // получение новых размеров
-       list($width_orig, $height_orig) = getimagesize($request->image);
-
-       $ratio_orig = $width_orig/$height_orig;
-
-        if ($width/$height > $ratio_orig) {
-            $width = $height*$ratio_orig;
-        } else {
-             $height = $width/$ratio_orig;
-        }
-
-        //retains the original image's aspect ratio when resizing, and doesn't resize or resample if the original width and height is smaller then the desired resize.          $image_p = imagecreatetruecolor($width, $height);
-        $image = imagecreatefromjpeg($request->image);
-        imagecopyresampled($image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);/finalImage, sourceImage
-        //rename($image_p, $imageName);	
-		// End Resize and center image 
-		*/
-		
 		//------------------------------------------------------------------
 		//Intervention Lib, resizing image + save ----- //https://stackoverflow.com/questions/59300544/how-to-reduce-size-of-image-in-laravel-when-upload
 	    if($request->file('image') != null){ //if a user uploaded an image which is NOT OBLIGATORY REQUIRED for UPDATE
@@ -283,20 +243,10 @@ class YajraDataTablesCrudController extends Controller
 		        ->insert($watermark, 'bottom-right', 10, 10) // insert watermark at bottom-right corner with 10px offset
 		        ->save($destinationPath.'/' . $imageName); //save
         }
-
-           //$destinationPath = public_path('images/employees');
-           //$image->move($destinationPath, $imageName);
 	   
-	   //END Intervention Lib, resizing image + save  -----
-	   //------------------------------------------------------------------
-	   
-	   //request()->image->move(public_path('images/employees'), $imageName);  //Prev variant (before implement Intervention resize). Working!!!
-		
-		
-
-
-
-
+	    //END Intervention Lib, resizing image + save  -----
+	    //------------------------------------------------------------------
+	    //request()->image->move(public_path('images/employees'), $imageName);  //Prev variant (before implement Intervention resize). Working!!!
 
 		//delete a prev/old image from folder '/images/employees/'
 		$product = Abz_Employees::where('id', $request->hidden_id)->first(); //found image 
@@ -326,7 +276,7 @@ class YajraDataTablesCrudController extends Controller
         if (Abz_Employees::whereId($request->hidden_id)->update($form_data)) {
             return response()->json(['success' => 'Data is successfully updated']);
 		} else {
-			return response()->json(['success' => 'Failed to update']);
+			return response()->json(['errors' => 'Failed to update data']);
 
 		}
 
@@ -348,14 +298,12 @@ class YajraDataTablesCrudController extends Controller
         $data = Abz_Employees::findOrFail($id);
 		$data->delete(); //delete the user
 
-
 		//reassign a new superior to deleted user's subordinates. Upon deleting this employee, find this employee subordinates (whose who has this deleted emplyee's ID as in their 'superior_id' column and assign them other superior with the same rank)
 		$model = new Abz_Employees();
 		$v = $model->reassignSuperior($data);
 		
 		//return response()->json(['result' => $v]);
         return 204;
-
     }
 	
 	

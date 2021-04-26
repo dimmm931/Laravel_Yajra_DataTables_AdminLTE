@@ -25,9 +25,9 @@ class AdminLTEController extends Controller
     
 	/**
      * Admin LTE main page. Contains Users Count BOX, Users DataTables(without CRUD), Students (i.e {abz_employees}) DataTable(with CRUD)
-
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @param $request
+     * @return \Illuminate\Contracts\Support\Renderable|Datatables
+     * 
      */
 	 
     public function adminlte(Request $request)
@@ -38,7 +38,7 @@ class AdminLTEController extends Controller
             //dd($data);
 			return DataTables::of($data)
                     ->addColumn('action', function($data){
-                        $button = '<button type="button" name="edit" id="'.$data->id.'" class="edit btn btn-primary btn-sm my-btn">_Edit_</button>';
+                        $button = '<button type="button" name="edit" id="'.$data->id.'" class="edit btn btn-primary btn-sm my-btn">&nbsp;&nbsp;Edit&nbsp;&nbsp;</button>';
                         $button .= '&nbsp;&nbsp;&nbsp;<button type="button" name="edit" id="'.$data->id.'" class="delete btn btn-danger btn-sm my-btn">Delete</button>';
                         return $button;
                     })
@@ -46,15 +46,13 @@ class AdminLTEController extends Controller
                     ->make(true);
         }
 		//End handles ajax request to build a dataTable
-        
-        
-		$usersCount = User::count(); // for badge
-		$users = User::all(); //for Datatable with users
 		
         //INJECTED
-		// For regulat http request without ajax
-		$employees = Abz_Employees::with('getRank', 'getSuperior')->latest()->get(); //gets data for superior dropdown
-		$ranks     = Abz_Ranks::latest()->get(); //gets data for ranks dropdown
+		// For regular http request without ajax
+        $usersCount = User::count(); // for badge
+		$users      = User::all(); //for Datatable with users
+		$employees  = Abz_Employees::with('getRank', 'getSuperior')->latest()->get(); //gets data for superior dropdown
+		$ranks      = Abz_Ranks::latest()->get(); //gets data for ranks dropdown
         
         return view('admin-lte.admin-lte', [
 		       'usersCount' => $usersCount,
@@ -77,6 +75,7 @@ class AdminLTEController extends Controller
 	 //in future should be Deleted and replaced with Yajra DataTables
      *
      */
+     /*
     public function getList()
     {
         $students = Abz_Employees::select(['id', 'name', 'email', 'phone', 'dob', 'image']);
@@ -94,23 +93,21 @@ class AdminLTEController extends Controller
 		    ->make(true);
 			
 
-    }
+    }*/
 	
     
     
     /**
-     * 
+     * View users list
+     * @return array of collection
      *
      */
     public function viewUsers()
     {
-		$users = User::all(); //for Datatable with users
-				
+		$users = User::all(); //for Datatable with users		
         return view('admin-lte.lte_users-view', [
 			   'users' => $users, 
-			 ]);
+			]);
     }
-	
-	
 	
 }
