@@ -84,7 +84,7 @@
         <br/>
         <div class="table-responsive">
             <hr>
-            <h5>Laravel Yajra DataTable using Ajax <span class="small">(on /models/Abz/Abz_Employees)</h5>
+            <h5>Yajra DataTable <span class="small">(on /models/Abz/Abz_Employees)</h5>
     
             <div align="right">
                 <button type="button" name="create_record" id="create_record" class="btn btn-success btn-sm">Create Record</button>
@@ -411,7 +411,7 @@
                                 html += '<p>' + data.errors[count] + '</p>';
                             }
                             html += '</div>';
-				            $(".modal-title").stop().fadeOut("slow",function(){ $(this).html("<h4 style='color:red;padding:3em;'>ERROR!!! <br> Failed Saving/Editing</h4>")}).fadeIn(2000);
+				            $(".modal-title").stop().fadeOut("slow",function(){ $(this).html("<h5 style='color:red;padding:3em;'><i class='fa fa-balance-scale' style='font-size:48px;color:red'></i>Error!!! <br> Failed Saving/Editing(S)</h5>")}).fadeIn(2000);
                         }
                         
                         if(data.success) { //array element {success} is set in YajraDataTablesCrudController
@@ -428,10 +428,11 @@
 			 
                     },
 		            error: function (error) { //is a must part
-			            console.log(error);
+			            console.log(error); 
                         $('#formModal').animate({ scrollTop: 0 }, 'slow'); //scroll modal to top
-                        $(".modal-title").stop().fadeOut("slow",function(){ $(this).html("<h4 style='color:red;padding:3em;'>ERROR!!! <br> Failed Saving/Editing</h4>")}).fadeIn(2000);
+                        $(".modal-title").stop().fadeOut("slow",function(){ $(this).html("<h5 style='color:red;padding:3em;'>ERROR!!! <br> Failed Saving/Editing</h5>")}).fadeIn(2000);
                         //$("html, body").animate({ scrollTop: 0 }, "slow");	 //scroll
+                     
 		            }	
 		 
                 });
@@ -547,7 +548,7 @@
                         $('#user_table').DataTable().ajax.reload();
 				        $('#ok_button').html('Deleted OK');
 				        $('#ok_button').prop('disabled', false); //normalize button (make active) 
-				        swal("!", "Data Deleted successfully. Subordinates are reasigned to new superior", "success");
+				        swal("!", "Data Deleted successfully. Subordinates are reasigned to a new superior", "success");
                     }, 2000);
                 } else {
                     swal("!", "Deleting crashed", "warning");

@@ -2,12 +2,11 @@
 ## Laravel 6 LTS Yajra datatables + Admin LTE 
 
 - <p>Admin LTE with Yajra datatables (pagination, sorting, searching and ajax CRUD operation via REST Api Endpoint)</p>
-- <p>App works on SQL DB, to run the application on <b>http://localhost</b>, copy the repository code and run <b>composer install</b> to load all dependencies. </p>
+- <p>To run the application on <b>http://localhost</b>, copy the repository code and run <b>composer install</b> to load all dependencies. </p>
 - <p>Create root file <b>.env</b> with your DB seetings based on  <b>.env.example</b>  </p>
 - <p>Run <b> php artisan key:generate </b> </p>
 - <p>Then use <b> php artisan migrate </b> to migrate databases</p>
-- <p>When the migration is completed, run the seeding command <b> php artisan db:seed </b> to seed the necessary data (products, elevators list) and create a user with admin rights, after you may login using login: <b>test</b>, password: <b>testtest</b>. </p>
-
+- <p>When the migration is completed, run the seeding command <b> php artisan db:seed </b> to seed the dummy data, after you may login using login: <b>test</b>, password: <b>testtest</b>. </p>
 
 
 ## Brief overview of the application
@@ -23,6 +22,10 @@
 ### Yajra Datatables: create new record via ajax.
 
 ![Screenshot](public/images/Screenshots/4.png)
+
+### Data validation.
+
+![Screenshot](public/images/Screenshots/61.png)
 
 ### Yajra Datatables: edit an existing record via ajax.
 

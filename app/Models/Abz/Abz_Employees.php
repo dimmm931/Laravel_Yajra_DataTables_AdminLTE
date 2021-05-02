@@ -4,6 +4,10 @@ namespace App\Models\Abz;
 
 //use Illuminate\Database\Eloquent\Factories\HasFactory;  //causes Crash, not found
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule; //for in: validation
+use App\Models\Abz\Abz_Ranks;
+use Image; //Intervention
 
 class Abz_Employees extends Model
 {
@@ -77,6 +81,176 @@ class Abz_Employees extends Model
 		}
 		//return $reassingedSuperiors[0]->name;
 	}
-	
+    
+    
+	/**
+     * New record Store/create validation via model
+     * @param $request
+     * @return object
+     *
+     */
+	function validateStoreRequest($request)
+    {
+        $RegExp_Phone = '/^[+]380[\d]{8,12}[0-9]+$/'; //phone regexp
+       
+        //getting all existing categories from DB {shop_categories}, get from DB only column "id". Used for validation in range {Rule::in(['admin', 'owner']) ]}, ['13', '17']
+		$existingRanks = Abz_Ranks::select('id')->get(); 
+		$rankList  = array(); // array to contain all roles id  from DB in format ['13', '17']
+		foreach($existingRanks as $n){
+			array_push($rankList, $n->id);	
+		}
+		
+		$rules = [
+			'first_name'  => ['required', 'string', 'min:3'], 
+			'email'       => ['required', 'email', 'min:3', 'unique:abz_employees,email'], 
+			'user_dob'    => ['required', 'date'], //date validation
+			'user_phone'  => ['required',  "regex: $RegExp_Phone" ],
+			'user_n'      => ['required', 'string', 'min:3'],
+			'user_salary' => ['required',  'numeric'], //numeric to accept float
+            'user_rank'   => ['required', 'integer', Rule::in($rankList) ] , //in range];
+			'user_superior'   => ['required', 'integer', ],
+			'user_hired_at'   => ['required', 'date'], //date validation
+			'image'           => ['required',  'mimes:png,jpg', 'max:5120' ], //2mb = 2048 //'mimes:jpeg,png,jpg,gif,svg'
+			
+		];
+        
+        $messages = [
+            'first_name.min'  => 'First name at least 3 chars',
+            'user_phone.regex'   => 'Phone must be in format +380....',
+        ];
+
+        $result =  Validator::make($request, $rules, $messages);
+		//$validator = Validator::make($request->all(), $rules );
+        return $result;
+    }
+    
+    
+     
+	/**
+     * Entity Updating/editing validation via model
+     * @param $request
+     * @return object
+     *
+     */
+	function validateUpdateRequest($request)
+    {
+        $RegExp_Phone = '/^[+]380[\d]{8,12}[0-9]+$/'; //phone regexp
+		
+        //getting all existing categories from DB {shop_categories}, get from DB only column "id". Used for validation in range {Rule::in(['admin', 'owner']) ]}, ['13', '17']
+		$existingRanks = Abz_Ranks::select('id')->get(); 
+		$rankList  = array(); // array to contain all roles id  from DB in format ['13', '17']
+		foreach($existingRanks as $n){
+			array_push($rankList, $n->id);	
+		}
+        
+		$rules = [
+			'first_name'  => ['required', 'string', 'min:3', 'max:252'], 
+			'email'       => ['required', 'email'], 
+			'user_dob'    => ['required', 'date'], //date validation
+			'user_phone'  => ['required',  "regex: $RegExp_Phone" ],
+			'user_n'      => ['required', 'string', 'min:3'],
+			'user_salary' => ['required',  'numeric', 'between:1, 500.00'], //numeric to accept float
+			'user_rank'   => ['required', 'integer', Rule::in($rankList) ] , //in range];
+			'user_superior'   => ['required', 'integer', ],
+			'user_hired_at'   => ['required', 'date'], //date validation
+			//image NOT OBLIGATORY REQUIRED for UPDATE
+			'image' => [/*'required',*/  'mimes:png,jpg', 'max:5120' ], //2mb = 2048 //'mimes:jpeg,png,jpg,gif,svg'
+			
+		];
+        
+        $messages = [
+            'first_name.min'  => 'First name at least 3 chars',
+            'user_phone.regex'   => 'Phone must be in format +380....',
+        ];
+
+        $result =  Validator::make($request, $rules, $messages);
+        return $result;
+    }
+    
+    
+    
+   /**
+     * Intervention Library, resizing image + save, move uploaded image to the specified folder  
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return sting
+     *
+     */
+    function interventionResizeSave($request)
+    {
+        if($request->file('image') != null){ //
+		    $image = $request->file('image'); //uploded image 
+            
+		    $imageName = time(). '_' . $request->image->getClientOriginalName(); //new name (time + originalName). //Prev variant (before implement Intervention resize). Working!!!
+            //$input['imagename'] = time().  '_' . $request->image->getClientOriginalName(); // . '.'.$image->getClientOriginalExtension(); //create name: time+name+extension
+
+            $destinationPath = public_path('images/employees');
+            $img = Image::make($image->getRealPath());
+		    
+        
+		    //watermark
+		    $watermark = Image::make('images/water-mark.png'); //watermark
+		    $watermark->resize(20, 20); //watermark resize
+		
+		    //resize avatar image to (300, 300) + adding watermark + save. Uses method chaining. Alternatively can do separately $img->resize(); $img->insert(); $img-save();
+            $img->resize(300, 300, function ($constraint) {
+                $constraint->aspectRatio();
+            })
+		    ->insert($watermark, 'bottom-right', 10, 10) // insert watermark at bottom-right corner with 10px offset
+		    ->save($destinationPath.'/' . $imageName); //save
+        }
+        return $imageName;
+    }
+    
+    
+    
+    /**
+     * Forming data_array to save in Contrl via ::create
+     * @param  \Illuminate\Http\Request  $request
+     * @param string $imageName
+     * @return array
+     *
+     */
+    function prepareCreateFormData($request, $imageName)
+    {
+        $form_data = array(
+            'name'        =>  $request->first_name, //DB column => input name
+            'email'       =>  $request->email,
+			'dob'         =>  $request->user_dob,
+			'phone'       =>  $request->user_phone,
+			'username'    =>  $request->user_n,
+			'rank_id'     =>  $request->user_rank,
+			'superior_id' =>  $request->user_superior,
+			'salary'      =>  $request->user_salary,
+			'hired_at'    =>  $request->user_hired_at,
+			'image'       =>  $imageName, //$request->image,
+        );
+        return $form_data;
+    }
+    
+    
+    
+    /**
+     * Forming data_array to update in Contrl via ->create
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     *
+     */
+    function prepareUpdateFormData($request)
+    {
+        $form_data = array(
+            'name'        =>  $request->first_name, //DB column => input name
+            'email'       =>  $request->email,
+			'dob'         =>  $request->user_dob,
+			'phone'       =>  $request->user_phone,
+			'username'    =>  $request->user_n,
+			'rank_id'     =>  $request->user_rank,
+			'superior_id' =>  $request->user_superior,
+			'salary'      =>  $request->user_salary,
+			'hired_at'    =>  $request->user_hired_at,
+			//'image'       =>  $imageName, //$input['imagename'], //$imageName, //$request->image,
+        );
+        return $form_data;
+    }
 	
 }

@@ -47,7 +47,6 @@ class AdminLTEController extends Controller
         }
 		//End handles ajax request to build a dataTable
 		
-        //INJECTED
 		// For regular http request without ajax
         $usersCount = User::count(); // for badge
 		$users      = User::all(); //for Datatable with users
@@ -63,39 +62,6 @@ class AdminLTEController extends Controller
     }
 	
 	
-    
-    
-    
-    
-    
-    
-	
-    /**
-     * Used in public function adminlte(), builds {abz_employees} via Datatables, adds CRUD buttons but they are not eplemented 
-	 //in future should be Deleted and replaced with Yajra DataTables
-     *
-     */
-     /*
-    public function getList()
-    {
-        $students = Abz_Employees::select(['id', 'name', 'email', 'phone', 'dob', 'image']);
-		
-        return Datatables::of($students)
-		    //adding columns
-		    ->addColumn('action', function($row) {
-                return '<a href="/prodicts/'. $row->id .'/edit" class="btn btn-primary">Edit</a>';
-            })
-            ->editColumn('delete', function ($row) {
-                return '<a href="/products/show/1' . $row->id . '">delete</a>';
-            })
-            ->rawColumns(['delete' => 'delete','action' => 'action'])
-			//End adding columns
-		    ->make(true);
-			
-
-    }*/
-	
-    
     
     /**
      * View users list
