@@ -63,7 +63,7 @@ class Abz_Employees extends Model
      * reassign a superior. Upon deleting this employee, find this employee subordinates (whose who has this deleted emplyee's ID as in their 'superior_id' column and assign them other superior with the same rank)
      *
      * @param object $data
-     * @return void
+     * @return array
      */
 	function reassignSuperior($data){
 		$delRank    = $data->rank_id; //deleted user rank
@@ -73,13 +73,20 @@ class Abz_Employees extends Model
 		$subordinates        = $this->where('superior_id', $delUser_ID)->get();
         $reassingedSuperiors = $this->where('rank_id', $delRank)->get(); //find users that has same rank as deleted user and can substitute him
 	    
+        
+        if(!$reassingedSuperiors){
+            $reassingedSuperiors = $this->where('rank_id', ($delRank + 1))->get(); //find users that has same rank as deleted user and can substitute him
+        } 
 		
 		//start reasigning each subordinate with a new Superior
-		$i = 0;
+        $b = array();
 		foreach($subordinates as $v){
-			$this->where('id', $v->id)->update([ 'superior_id' => $reassingedSuperiors[$i]->id ]);	//find each user by ID from $subordinates list and update their 'superior_id' with a person from $reassingedSuperiors list
-		}
+            $random = mt_rand(0, ($reassingedSuperiors->count()-1));
+			$this->where('id', $v->id)->update([ 'superior_id' => $reassingedSuperiors[$random]->id ]);	//find each user by ID from $subordinates list and update their 'superior_id' with a person from $reassingedSuperiors list
+		    array_push($b, $reassingedSuperiors[$random]->id);
+        }
 		//return $reassingedSuperiors[0]->name;
+        return $b;
 	}
     
     
