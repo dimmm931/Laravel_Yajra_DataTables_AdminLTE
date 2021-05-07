@@ -30,7 +30,7 @@ class Users_Seeder extends Seeder {
         DB::table('users')->delete();  //whether to Delete old materials
 
         //User::create(['email' => 'foo@bar.com']);
-        DB::table('users')->insert(['id' => 1, 'name' => 'Admin', 'email' => 'test@ukr.net',       'password' => bcrypt('testtest') ]);
+        DB::table('users')->insert(['id' => 1, 'name' => 'Admin', 'email' => 'test@gmail.com',     'password' => bcrypt('testtest') ]);
 	    DB::table('users')->insert(['id' => 2, 'name' => 'Dima',  'email' => 'dimmm931@gmail.com', 'password' => bcrypt('dimadima') ]);
     }
 }

@@ -6,7 +6,7 @@
 - <p>Create root file <b>.env</b> with your DB seetings based on  <b>.env.example</b>  </p>
 - <p>Run <b> php artisan key:generate </b> </p>
 - <p>Then use <b> php artisan migrate </b> to migrate databases</p>
-- <p>When the migration is completed, run the seeding command <b> php artisan db:seed </b> to seed the dummy data, after you may login using login: <b>test</b>, password: <b>testtest</b>. </p>
+- <p>When the migration is completed, run the seeding command <b> php artisan db:seed </b> to seed the dummy data, after you may login using login: <b>test@gmail.com</b>, password: <b>testtest</b>. </p>
 
 
 ## Brief overview of the application
