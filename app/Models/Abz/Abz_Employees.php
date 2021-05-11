@@ -11,11 +11,7 @@ use Image; //Intervention
 
 class Abz_Employees extends Model
 {
-	protected $table = 'abz_employees'; //specify the DB table table
-	
-	
-    //use HasFactory;
-	
+	protected $table = 'abz_employees'; //specify the DB table table	
 	
 	//mass assignment, specify the fields to be edited/created, if u miss the field, the will SQL error, like "No deafault value" 
     protected $fillable = [
@@ -28,14 +24,12 @@ class Abz_Employees extends Model
     ]; 
 
     /**
-     *  belongsTo Relation (the inverse of a hasOne)
+     * belongsTo Relation (the inverse of a hasOne)
+     * @return BelongsTo
      *
-     * @param  
-     * @return string
      */
     public function getRank() //belongsTo Relation (the inverse of a hasOne). Same implementation as hasOne(belongsTo) relation in JSON (REST API). See ReadMe_Laravel_Com_Commands.txt
     {
-		//return $this->hasOne('App\Models\Abz\Abz_Ranks', 'id', 'rank_id');      //$this->belongsTo('App\modelName', 'foreign_key_that_table', 'parent_id_this_table');}
         return $this->belongsTo('App\Models\Abz\Abz_Ranks', 'rank_id', 'id');   //'foreign_key', 'owner_key' i.e 'parent_id_this_table', 'foreign_key_that_table'
 	}
 
@@ -44,17 +38,13 @@ class Abz_Employees extends Model
 
     /**
      * belongsTo Relation (the inverse of a hasOne) //hasOne Relation
-     *
-     * @param  
-     * @return string
+     * @return BelongsTo
+     * 
      */
      public function getSuperior() //belongsTo Relation //hasOne Relation. Same implementation as hasOne relation in JSON (REST API). See ReadMe_Laravel_Com_Commands.txt
     {
-		//return $this->hasOne('App\Models\Abz\Abz_Employees', 'id', 'superior_id');      //$this->belongsTo('App\modelName', 'foreign_key_that_table', 'parent_id_this_table');}
         return $this->belongsTo('App\Models\Abz\Abz_Employees', 'superior_id', 'id')->withDefault(['name' => 'Not set']);
 	}	
-	
-	
 	
 	
 	
